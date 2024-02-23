@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+
 /// <summary>
 /// Represents a SIE file (v 1-4). 
 /// </summary>
@@ -52,6 +53,7 @@ public class SieFile
     public string OrganisationInternalNumber { get; private set; }
     public string OrganisationInternalNumber2 { get; private set; }
     public string TaxationYear { get; private set; }
+    public string Currency { get; private set; }
 
     private readonly List<string> _errors = [];
     private readonly List<string> _warnings = [];
@@ -140,7 +142,7 @@ public class SieFile
                 case "#TAXAR": this.TaxationYear = Year(1); break;
                 case "#OMFATTN": this.BalanceEndDate = Required(1); break;
                 case "#KPTYP": this.BaseAccountPlan = Required(1); break;
-                case "#VALUTA": break;
+                case "#VALUTA": this.Currency = Required(1); break;
                 case "#KONTO":
                     if (AssertParameters(2))
                     {
