@@ -79,8 +79,9 @@ public class SieFileReaderFacts
 #RES -1 4010 2300437.22
 
 #OIB 0 1221 {1 ""Nord""} 23780.78
-#OIB 0 1221 {1 ""Syd""} 555 12.2
+#OIB 0 1221 {1 ""Syd"" 7 JonasX} 555 12.2
 #OIB 0 2081 {7 ""KalleB""} 1000.01 6
+#OUB 0 2081 {7 ""KalleB""} 999 1.3
 
 "
 .To437Stream();
@@ -92,6 +93,8 @@ public class SieFileReaderFacts
             Assert.That(sie.Errors, Is.Empty);
             Assert.That(sie.Warnings, Is.Empty);
             Assert.That(sie.AlreadyImportedFlag, Is.EqualTo(false));
+            Assert.IsTrue(sie.Balances.Any(x => x.IncomingBalance && x.Dimensions?.ContainsKey("7") == true && x.Dimensions["7"] == "KalleB" && x.Quantity==6 && x.Amount == 1000.01m));
+            Assert.That(sie.Balances.Any(x => !x.IncomingBalance && x.Dimensions?.ContainsKey("7") == true && x.Dimensions["7"] == "KalleB" && x.Quantity == 1.3m && x.Amount == 999));
         });
     }
 
