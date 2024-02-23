@@ -39,7 +39,7 @@ public class SieFileReaderFacts
         var sieData = @"#FLAGGA 0 
 #FORMAT PC8
 #SIETYP 3
-#PROGRAM ""Super bokföring \""2000\"" med coola grejjer
+#PROGRAM ""Super bokföring \""2000\"" med coola grejjer"" 3.14
 #GEN 20230822 
 #FNAMN ""Övningsbolaget AB""
 #FNR ""exort873123-3123-12""
@@ -105,7 +105,7 @@ public class SieFileReaderFacts
 #FORMAT PC8
 #SIETYP 4
 #PROSA  \""muu\""			123	 hej""citat  sträng4 sträng5
-#PROGRAM ""Super bokföring \""2000\"" med coola grejjer
+#PROGRAM ""Super bokföring \""2000\"" med coola grejjer""   3.14
 #GEN 20230822 
 #FNAMN ""Övningsbolaget AB""
 #FNR ""exort873123-3123-12""

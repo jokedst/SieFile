@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Reflection;
 using System.Text;
 /// <summary>
 /// Represents a SIE file (v 1-4). 
@@ -11,6 +12,7 @@ using System.Text;
 public class SieFile
 {
     public bool AlreadyImportedFlag {  get; set; }
+    public SieFileType FileType { get; set; }
     public string Program { get; set; }
     public string ProgramVersion { get; private set; }
     public string Contact { get; set; }
@@ -49,6 +51,7 @@ public class SieFile
     public string OrganisationNumber { get; private set; }
     public string OrganisationInternalNumber { get; private set; }
     public string OrganisationInternalNumber2 { get; private set; }
+    public string TaxationYear { get; private set; }
 
     private readonly List<string> _errors = [];
     private readonly List<string> _warnings = [];
@@ -115,7 +118,17 @@ public class SieFile
                         this.Generated = generated;
                     this.GeneratedBy = Optional(2);
                     break;
-                case "#SIETYP": break;
+                case "#SIETYP":
+                    switch (Required(1))
+                    {
+                        case "1": this.FileType = SieFileType.Type1; break;
+                        case "2": this.FileType = SieFileType.Type2; break;
+                        case "3": this.FileType = SieFileType.Type3; break;
+                        case "4": this.FileType = filename.EndsWith(".se", StringComparison.InvariantCultureIgnoreCase) ? SieFileType.Type4E : SieFileType.Type4I; 
+                            break;
+                        default: _errors.Add($"Post '#SIETYP' has invalid value (row {_rowNumber})"); break;
+                    }
+                    break;
                 case "#PROSA": this.Notes.Add(Required(1)); break;
                 case "#FTYP": this.CompanyType = Required(1); break;
                 case "#FNR": this.InternalCompanyId = Required(1); break;
@@ -123,8 +136,8 @@ public class SieFile
                 case "#BKOD": this.CompanySNI = Optional(1); break;
                 case "#ADRESS": this.Contact = Optional(1); this.AdressLine1 = Optional(2); this.AdressLine2 = Optional(3); this.Phone = Optional(4); break;
                 case "#FNAMN": this.CompanyName = Required(1); break;
-                case "#RAR": this.Years[Year(1)] = (Required(2), Required(3)); break;
-                case "#TAXAR": break;
+                case "#RAR": this.Years[YearIndex(1)] = (Required(2), Required(3)); break;
+                case "#TAXAR": this.TaxationYear = Year(1); break;
                 case "#OMFATTN": this.BalanceEndDate = Required(1); break;
                 case "#KPTYP": this.BaseAccountPlan = Required(1); break;
                 case "#VALUTA": break;
@@ -146,6 +159,15 @@ public class SieFile
                             this.Dimensions.Add(_parts[1], new Dimension { Name = _parts[2] });
                     }
                     break;
+                case "#UNDERDIM":
+                    if (AssertParameters(3))
+                    {
+                        if (!this.Dimensions.TryGetValue(_parts[1], out var dimension))
+                            this.Dimensions[_parts[1]] = dimension = new Dimension();
+                        dimension.Name = _parts[2];
+                        dimension.ParentDimension = _parts[3];
+                    }
+                    break;
                 case "#KTYP":
                     if (!AssertParameters(2) || 
                         WarnIf(!this.Accounts.ContainsKey(_parts[1]), $"Account {_parts[1]} is not declared") || 
@@ -158,8 +180,14 @@ public class SieFile
                         break;
                     this.Accounts[_parts[1]].Unit = _parts[2];
                     break;
-                case "#SRU": break;
-                case "#UNDERDIM": break;
+                case "#SRU":
+                    if (AssertParameters(2))
+                    {
+                        if (!this.Accounts.TryGetValue(_parts[1], out var account))
+                            this.Accounts[_parts[1]] = account = new Account();
+                        account.SRU = _parts[2];
+                    }
+                    break;
                 case "#OBJEKT":
                     if (AssertParameters(3))
                     {
@@ -212,12 +240,17 @@ public class SieFile
                         this.Balances.Add(new Balance { YearIndex = _parts[1], Account = _parts[2], Amount = balance, Quantity = quantityUB, Dimensions = dimensions, IncomingBalance = rowType == "#OIB" });
                     }
                     break;
-                case "#RES": break; // NEXT
+                case "#RES": // Not entierly sure, but it seems this is the same as "UB" but for accounts of type K or I (expense or revenue)
+                    if (AssertParameters(3))
+                    {
+                        this.Balances.Add(new Balance { YearIndex = YearIndex(1), Account = _parts[2], Amount = Decimal(3), Quantity = _parts.Length > 4 ? Decimal(4) : null });
+                    }
+                    break; 
                 case "#PSALDO": 
                 case "#PBUDGET":
                     if (AssertParameters(5))
                     {
-                        this.PeriodChanges.Add(new ObjectAmount(Year(1), Period(2), AmountTypeForRow(), _parts[3], ParseDictionary(4), Decimal(5), _parts.Length > 6 ? Decimal(6) : null));
+                        this.PeriodChanges.Add(new ObjectAmount(YearIndex(1), Period(2), AmountTypeForRow(), _parts[3], ParseDictionary(4), Decimal(5), _parts.Length > 6 ? Decimal(6) : null));
                     }
                     break;
                 case "#VER":
@@ -276,9 +309,7 @@ public class SieFile
     /// <summary>
     /// Ensures parameter exists, and is a year index.
     /// </summary>
-    /// <param name="index"></param>
-    /// <returns></returns>
-    private string Year(int index)
+    private string YearIndex(int index)
     {
         if (_parts?.Length <= index)
         {
@@ -291,10 +322,19 @@ public class SieFile
     }
 
     /// <summary>
+    /// Ensures parameter exists, and is a valid year.
+    /// </summary>
+    private string Year(int index)
+    {
+        if (Required(index) == null) return null;
+        if (_parts[index].Length != 4 || !DateOnly.TryParseExact(_parts[index], "yyyy", out _))
+            _errors.Add($"Post '{_parts[0]}' parameter {index} ('{_parts[index]}') is not a valid year. (row {_rowNumber})");
+        return _parts[index];
+    }
+
+    /// <summary>
     /// Ensures parameter exists, and is a valid period.
     /// </summary>
-    /// <param name="index"></param>
-    /// <returns></returns>
     private string Period(int index)
     {
         if (Required(index) == null) return null;
@@ -383,6 +423,7 @@ public class Dimension
 {
     public string Name { get; set; }
     public Dictionary<string, string> Values { get; } = [];
+    public string ParentDimension { get; set; }
 }
 
 public class Account
@@ -456,4 +497,13 @@ public enum AmountType
     OutgoingBalance,
     PeriodChange,
     PeriodBudgetChange
+}
+
+public enum SieFileType
+{
+    Type1,
+    Type2,
+    Type3,
+    Type4I,
+    Type4E
 }

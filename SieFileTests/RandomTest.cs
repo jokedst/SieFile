@@ -12,14 +12,8 @@ public class RandomTest
         Assert.That(DateOnly.TryParseExact("202314", "yyyyMM", out _), Is.EqualTo(false));
 
 
-        var type = "muu" switch
-        {
-            "#PSALDO" => AmountType.PeriodChange,
-            "#PBUDGET" => AmountType.PeriodBudgetChange,
-            //_ => break;
-        };
+        Assert.That(DateOnly.TryParseExact("2023", "yyyy", out _), Is.EqualTo(true));
 
-       
     }
 
     [Test]
