@@ -1,0 +1,470 @@
+#FLAGGA 0
+
+#PROGRAM "Visma eEkonomi" 7.5.0.35574
+#FORMAT PC8
+#GEN 20180224 "Hugo Holgersson"
+#SIETYP 4
+#ORGNR 556979-4018
+#FNAMN "Logikbyr†n AB"
+#RAR 0 20170101 20171231
+#RAR -1 20160101 20161231
+#KPTYP EUBAS97
+#VALUTA SEK
+
+#KONTO 1210 "Maskiner och andra tekniska anl„ggningar"
+#KONTO 1220 "Inventarier och verktyg"
+#KONTO 1229 "Ackumulerade avskrivningar p† inventarier och verktyg"
+#KONTO 1382 "L†ngfristiga fordringar hos anst„llda"
+#KONTO 1385 "V„rde av kapitalf”rs„kring"
+#KONTO 1410 "Lager av r†varor"
+#KONTO 1419 "F”r„ndring av lager av r†varor"
+#KONTO 1420 "Lager av tillsatsmaterial och f”rn”denheter"
+#KONTO 1429 "F”r„ndring av lager av tillsatsmaterial och f”rn”denheter"
+#KONTO 1430 "Lager av halvfabrikat"
+#KONTO 1431 "Lager av k”pta halvfabrikat"
+#KONTO 1432 "Lager av egentillverkade halvfabrikat"
+#KONTO 1438 "F”r„ndring av lager av k”pta halvfabrikat"
+#KONTO 1439 "F”r„ndring av lager av egentillverkade halvfabrikat"
+#KONTO 1440 "Produkter i arbete"
+#KONTO 1449 "F”r„ndring av produkter i arbete"
+#KONTO 1450 "Lager av f„rdiga varor"
+#KONTO 1459 "F”r„ndring av lager av f„rdiga varor"
+#KONTO 1460 "Lager av handelsvaror"
+#KONTO 1465 "Lager av varor VMB"
+#KONTO 1466 "Nedskrivning av varor VMB"
+#KONTO 1467 "Lager av varor VMB f”renklad"
+#KONTO 1469 "F”r„ndring av lager av handelsvaror"
+#KONTO 1470 "P†g†ende arbeten"
+#KONTO 1471 "P†g†ende arbeten, nedlagda kostnader"
+#KONTO 1478 "P†g†ende arbeten, fakturering"
+#KONTO 1479 "F”r„ndring av p†g†ende arbeten"
+#KONTO 1480 "F”rskott f”r varor och tj„nster"
+#KONTO 1481 Remburser
+#KONTO 1489 "™vriga f”rskott till leverant”rer"
+#KONTO 1490 "™vriga lagertillg†ngar"
+#KONTO 1491 "Lager av v„rdepapper"
+#KONTO 1492 "Lager av fastigheter"
+#KONTO 1493 "Djur som klassificeras som oms„ttningstillg†ng"
+#KONTO 1510 Kundfordringar
+#KONTO 1518 "Ej reskontraf”rda kundfordringar"
+#KONTO 1519 "Nedskrivning av kundfordringar"
+#KONTO 1549 "Nedskrivning av ej reskontraf”rda kundfordringar"
+#KONTO 1630 "Avr„kning f”r skatter och avgifter (skattekonto)"
+#KONTO 1640 Skattefordringar
+#KONTO 1650 Momsfordran
+#KONTO 1700 "F”rutbetalda kostnader/interimsfordringar"
+#KONTO 1730 "F”rutbetalda f”rs„kringspremier"
+#KONTO 1790 "™vriga f”rutbetalda kostnader och upplupna int„kter"
+#KONTO 1910 Kassa
+#KONTO 1920 PlusGiro
+#KONTO 1930 F”retagskonto/checkkonto/aff„rskonto
+#KONTO 1940 "™vriga bankkonton"
+#KONTO 1941 Avanza
+#KONTO 1942 Collector
+#KONTO 1980 Valutakonton
+#KONTO 2018 "™vriga egna ins„ttningar"
+#KONTO 2081 Aktiekapital
+#KONTO 2086 Reservfond
+#KONTO 2091 "Balanserad vinst eller f”rlust"
+#KONTO 2093 "Erh†llna aktie„gartillskott"
+#KONTO 2098 "Vinst eller f”rlust fr†n f”reg†ende †r"
+#KONTO 2099 "rets resultat"
+#KONTO 2110 "Periodiseringsfond vid 2010 †rs taxering"
+#KONTO 2111 "Periodiseringsfond vid 2011 †rs taxering"
+#KONTO 2112 "Periodiseringsfond vid 2012 †rs taxering"
+#KONTO 2113 "Periodiseringsfond vid 2013 †rs taxering"
+#KONTO 2124 "Periodiseringsfond 2014"
+#KONTO 2125 "Periodiseringsfond 2015"
+#KONTO 2126 "Periodiseringsfond 2016"
+#KONTO 2127 "Periodiseringsfond 2017"
+#KONTO 2128 "Periodiseringsfond vid 2008 †rs taxering"
+#KONTO 2129 "Periodiseringsfond vid 2009 †rs taxering"
+#KONTO 2130 "Periodiseringsfond 2020 - nr 2"
+#KONTO 2131 "Periodiseringsfond 2021 - nr 2"
+#KONTO 2132 "Periodiseringsfond 2022 - nr 2"
+#KONTO 2133 "Periodiseringsfond 2023 - nr 2"
+#KONTO 2134 "Periodiseringsfond 2024 - nr 2"
+#KONTO 2135 "Periodiseringsfond 2015 - nr 2"
+#KONTO 2136 "Periodiseringsfond 2016 - nr 2"
+#KONTO 2137 "Periodiseringsfond 2017 - nr 2"
+#KONTO 2138 "Periodiseringsfond 2018 - nr 2"
+#KONTO 2139 "Periodiseringsfond 2019 - nr 2"
+#KONTO 2150 "Ackumulerade ”veravskrivningar"
+#KONTO 2390 "™vriga l†ngfristiga skulder"
+#KONTO 2399 "™vriga l†ngfristiga skulder"
+#KONTO 2420 "F”rskott fr†n kunder"
+#KONTO 2440 Leverant”rsskulder
+#KONTO 2448 "Ej reskontraf”rda leverant”rsskulder"
+#KONTO 2499 "Andra ”vriga kortfristiga skulder"
+#KONTO 2510 Skatteskulder
+#KONTO 2518 "Betald F-skatt"
+#KONTO 2611 "Utg†ende moms p† f”rs„ljning inom Sverige, 25%"
+#KONTO 2612 "Utg†ende moms p† egna uttag, 25%"
+#KONTO 2614 "Ber„knad utg†ende moms p† tj„nstef”rv„rv fr†n utlandet, 25%"
+#KONTO 2615 "Ber„knad utg†ende moms p† varuf”rv„rv fr†n annat EG-land, 2"
+#KONTO 2617 "Utg†ende moms omv„nd skattskyldighet varor och tj„nster i S"
+#KONTO 2621 "Utg†ende moms p† f”rs„ljning inom Sverige, 12%"
+#KONTO 2624 "Ber„knad utg†ende moms p† tj„nstef”rv„rv fr†n utlandet, 12%"
+#KONTO 2631 "Utg†ende moms p† f”rs„ljning inom Sverige, 6%"
+#KONTO 2634 "Ber„knad utg†ende moms p† tj„nstef”rv„rv fr†n utlandet, 6%"
+#KONTO 2641 "Debiterad ing†ende moms"
+#KONTO 2645 "Ber„knad ing†ende moms p† f”rv„rv fr†n utlandet"
+#KONTO 2647 "Ing†ende moms omv„nd skattskyldighet varor och tj„nster i S"
+#KONTO 2650 "Redovisningskonto f”r moms"
+#KONTO 2710 Personalskatt
+#KONTO 2730 "Lagstadgade sociala avgifter och s„rskild l”neskatt"
+#KONTO 2731 "Avr„kning lagstadgade sociala avgifter"
+#KONTO 2732 "Avr„kning s„rskild l”neskatt"
+#KONTO 2740 "Avtalade sociala avgifter"
+#KONTO 2750 "Utm„tning i l”n m.m."
+#KONTO 2760 Semestermedel
+#KONTO 2761 "Avr„kning semesterl”ner"
+#KONTO 2762 Semesterl”nekassa
+#KONTO 2790 "™vriga l”neavdrag"
+#KONTO 2794 Fackf”reningsavgifter
+#KONTO 2890 "™vriga kortfristiga skulder"
+#KONTO 2893 "Skulder till n„rst†ende personer, kortfristig del"
+#KONTO 2898 "Outtagen vinstutdelning"
+#KONTO 2910 "Upplupna l”ner"
+#KONTO 2911 L”neskulder
+#KONTO 2912 Ackords”verskott
+#KONTO 2919 "™vriga upplupna l”ner"
+#KONTO 2920 "Upplupna semesterl”ner"
+#KONTO 2930 "Upplupna pensionskostnader"
+#KONTO 2931 "Upplupna pensionsutbetalningar"
+#KONTO 2940 "Upplupna lagstadgade sociala och andra avgifter"
+#KONTO 2941 "Ber„knade upplupna lagstadgade sociala avgifter"
+#KONTO 2942 "Ber„knad upplupen s„rskild l”neskatt"
+#KONTO 2943 "Ber„knad upplupen s„rskild l”neskatt p† pensionskostnader, "
+#KONTO 2944 "Ber„knad upplupen avkastningsskatt p† pensionskostnader"
+#KONTO 2950 "Upplupna avtalade sociala avgifter"
+#KONTO 2959 "Upplupna avtalade pensionsf”rs„kringsavgifter, deklarations"
+#KONTO 2990 "™vriga upplupna kostnader och f”rutbetalda int„kter"
+#KONTO 2999 OBS-konto
+#KONTO 3041 "F”rs„ljn tj„nst 25% sv"
+#KONTO 3042 "F”rs„ljn tj„nst 12% sv"
+#KONTO 3043 "F”rs„ljn tj„nst 6% sv"
+#KONTO 3044 "F”rs„ljn tj„nst sv momsfri"
+#KONTO 3045 "F”rs„ljn tj„nst utanf”r EG momsfri"
+#KONTO 3046 "F”rs„ljn tj„nst till EG 25%"
+#KONTO 3048 "F”rs„ljn tj„nst EG momsfri"
+#KONTO 3051 "F”rs„ljn varor 25% sv"
+#KONTO 3052 "F”rs„ljn varor 12% sv"
+#KONTO 3053 "F”rs„ljn varor 6% sv"
+#KONTO 3054 "F”rs„ljn varor sv momsfri"
+#KONTO 3055 "F”rs„ljn varor utanf”r EG momsfri"
+#KONTO 3056 "F”rs„ljn varor till EG 25% momspliktig"
+#KONTO 3057 "Treparts f”rs„ljn varor till EG 25%"
+#KONTO 3058 "F”rs„ljn varor EG momsfri"
+#KONTO 3231 "F”rs„ljn bygg, omv skattskyld"
+#KONTO 3510 "Fakturerat emballage"
+#KONTO 3520 "Fakturerade frakter"
+#KONTO 3521 "Frakter export utanf”r EG momsfri"
+#KONTO 3522 "Frakter export inom EG momsfri"
+#KONTO 3530 "Fakturerade tull- och speditionskostnader m.m."
+#KONTO 3540 Faktureringsavgifter
+#KONTO 3541 "Faktureringsavgifter export utanf”r EG momsfri"
+#KONTO 3542 "Faktureringsavgifter export inom EG momsfri"
+#KONTO 3543 "Faktureringavgift 12%"
+#KONTO 3544 "Faktureringavgift 6%"
+#KONTO 3590 "™vriga fakturerade kostnader"
+#KONTO 3596 P†minnelseavgift
+#KONTO 3690 "™vriga sidoint„kter"
+#KONTO 3740 "™res- och kronutj„mning"
+#KONTO 3950 "tervunna, tidigare avskrivna kundfordringar"
+#KONTO 3960 "Valutakursvinster p† fordringar och skulder av r”relsekarak"
+#KONTO 3970 "Vinst vid avyttring av immateriella och materiella anl„ggni"
+#KONTO 3971 "Vinst vid avyttring av immateriella anl„ggningstillg†ngar"
+#KONTO 3980 "Erh†llna offentliga st”d m.m."
+#KONTO 4000 "Ink”p av varor fr†n Sverige"
+#KONTO 4020 "Ink”p VMB varor"
+#KONTO 4028 "Negativ VM omf”ringskonto"
+#KONTO 4030 "Negativ VM"
+#KONTO 4055 "Trepartsf”rv varor fr EG"
+#KONTO 4056 "Ink”p varor 25% EG"
+#KONTO 4057 "Ink”p varor 12% EG"
+#KONTO 4058 "Ink”p varor EG 6%"
+#KONTO 4059 "Ink”p varor EG momsfri"
+#KONTO 4100 "Kostn uthyrn lokal sk.pl"
+#KONTO 4700 "Reduktion av ink”pspriser (gruppkonto)"
+#KONTO 4900 "F”r„ndring av lager (gruppkonto)"
+#KONTO 4910 "F”r„ndring av lager av r†varor"
+#KONTO 4920 "F”r„ndring av lager av tillsatsmaterial och f”rn”denheter"
+#KONTO 4930 "F”r„ndring av lager av halvfabrikat"
+#KONTO 4931 "F”r„ndring av lager av k”pta halvfabrikat"
+#KONTO 4932 "F”r„ndring av lager av egentillverkade halvfabrikat"
+#KONTO 4940 "F”r„ndring av produkter i arbete"
+#KONTO 4944 "F”r„ndring av produkter i arbete, material och utl„gg"
+#KONTO 4945 "F”r„ndring av produkter i arbete, omkostnader"
+#KONTO 4947 "F”r„ndring av produkter i arbete, personalkostnader"
+#KONTO 4950 "F”r„ndring av lager av f„rdiga varor"
+#KONTO 4960 "F”r„ndring av lager av handelsvaror"
+#KONTO 4970 "F”r„ndring av p†g†ende arbeten, nedlagda kostnader"
+#KONTO 4974 "F”r„ndring av p†g†ende arbeten, material och utl„gg"
+#KONTO 4975 "F”r„ndring av p†g†ende arbeten, omkostnader"
+#KONTO 4977 "F”r„ndring av p†g†ende arbeten, personalkostnader"
+#KONTO 4980 "F”r„ndring av lager av v„rdepapper"
+#KONTO 4981 "S†lda v„rdepappers anskaffningsv„rde"
+#KONTO 4987 "Nedskrivning av v„rdepapper"
+#KONTO 4988 "terf”ring av nedskrivning av v„rdepapper"
+#KONTO 4990 "F”r„ndring av lager och p†g†ende arbeten (of”rdelad)"
+#KONTO 5000 "Lokalkostnader (gruppkonto)"
+#KONTO 5200 "Hyra av anl„ggningstillg†ngar (gruppkonto)"
+#KONTO 5400 "F”rbrukningsinventarier och f”rbrukningsmaterial (gruppkont"
+#KONTO 5402 "F”rbrukningsinventarier/material fr†n EU"
+#KONTO 5410 F”rbrukningsinventarier
+#KONTO 5420 Programvaror
+#KONTO 5600 "Kostnader f”r transportmedel (gruppkonto)"
+#KONTO 5700 "Frakter och transporter (gruppkonto)"
+#KONTO 5800 "Resekostnader (gruppkonto)"
+#KONTO 5900 "Reklam och PR (gruppkonto)"
+#KONTO 5902 "Webhosting i EU (utanf”r Sverige)"
+#KONTO 6000 "™vriga f”rs„ljningskostnader (gruppkonto)"
+#KONTO 6044 "Avgift kortbetalning Webshop"
+#KONTO 6071 "Representation, avdragsgill"
+#KONTO 6072 "Representation, ej avdragsgill"
+#KONTO 6100 "Kontorsmateriel och trycksaker (gruppkonto)"
+#KONTO 6200 "Tele och post (gruppkonto)"
+#KONTO 6300 "F”retagsf”rs„kringar och ”vriga riskkostnader (gruppkonto)"
+#KONTO 6310 F”retagsf”rs„kringar
+#KONTO 6350 "F”rluster p† kundfordringar"
+#KONTO 6351 "Konstaterade f”rluster p† kundfordringar"
+#KONTO 6352 "Befarade f”rluster p† kundfordringar"
+#KONTO 6420 "Ers„ttningar till revisor"
+#KONTO 6500 "™vriga externa tj„nster (gruppkonto)"
+#KONTO 6570 Bankkostnader
+#KONTO 6900 "™vriga externa kostnader (gruppkonto)"
+#KONTO 6970 "Tidningar, tidskrifter och facklitteratur"
+#KONTO 6990 "™vriga externa kostnader"
+#KONTO 6991 "™vriga externa kostnader, avdragsgilla"
+#KONTO 6992 "™vriga externa kostnader, ej avdragsgilla"
+#KONTO 7000 "L”ner till kollektivanst„llda (gruppkonto)"
+#KONTO 7010 "L”ner till kollektivanst„llda"
+#KONTO 7012 "Vinstandelar till kollektivanst„llda"
+#KONTO 7013 "L”ner till kollektivanst„llda under 26 †r"
+#KONTO 7014 "L”ner till kollektivanst„llda (nya pensionssystemet)"
+#KONTO 7015 "L”ner till kollektivanst„llda (avgiftsbefriade)"
+#KONTO 7016 "Vinstandelar till kollektivanst„llda (avgiftsbefriade)"
+#KONTO 7017 "Avg†ngsvederlag till kollektivanst„llda"
+#KONTO 7018 "Bruttol”neavdrag, kollektivanst„llda"
+#KONTO 7019 "Upplupna l”ner och vinstandelar till kollektivanst„llda"
+#KONTO 7030 "L”ner till kollektivanst„llda (utlandsanst„llda)"
+#KONTO 7031 "L”ner till kollektivanst„llda (utlandsanst„llda)"
+#KONTO 7032 "Vinstandelar till kollektivanst„llda (utlandsanst„llda)"
+#KONTO 7033 "L”ner till kollektivanst„llda under 26 †r (utlandsanst„llda"
+#KONTO 7034 "L”ner till kollektivanst„llda (nya pensionssystemet) (utlan"
+#KONTO 7035 "L”ner till kollektivanst„llda (avgiftsbefriade) (utlandsans"
+#KONTO 7036 "Vinstandelar till kollektivanst„llda (avgiftsbefriade) (utl"
+#KONTO 7037 "Avg†ngsvederlag till kollektivanst„llda (utlandsanst„llda)"
+#KONTO 7038 "Bruttol”neavdrag, kollektivanst„llda (utlandsanst„llda)"
+#KONTO 7039 "Upplupna l”ner och vinstandelar till kollektivanst„llda (ut"
+#KONTO 7080 "L”ner till kollektivanst„llda f”r ej arbetad tid"
+#KONTO 7081 "Sjukl”ner till kollektivanst„llda"
+#KONTO 7082 "Semesterl”ner till kollektivanst„llda"
+#KONTO 7083 "F”r„ldraers„ttning till kollektivanst„llda"
+#KONTO 7089 "™vriga l”ner till kollektivanst„llda f”r ej arbetad tid"
+#KONTO 7090 "F”r„ndring av semesterl”neskuld"
+#KONTO 7200 "L”ner till tj„nstem„n och f”retagsledare (gruppkonto)"
+#KONTO 7210 "L”ner till tj„nstem„n"
+#KONTO 7212 "Vinstandelar till tj„nstem„n"
+#KONTO 7213 "L”ner till tj„nstem„n under 26 †r"
+#KONTO 7214 "L”ner till tj„nstem„n (nya pensionssystemet)"
+#KONTO 7215 "L”ner till tj„nstem„n (avgiftsbefriade)"
+#KONTO 7216 "Vinstandelar till tj„nstem„n (avgiftsbefriade)"
+#KONTO 7217 "Avg†ngsvederlag till tj„nstem„n"
+#KONTO 7218 "Bruttol”neavdrag, tj„nstem„n"
+#KONTO 7219 "Upplupna l”ner och vinstandelar till tj„nstem„n"
+#KONTO 7220 "L”ner till f”retagsledare"
+#KONTO 7290 "F”r„ndring av semesterl”neskuld"
+#KONTO 7300 "Kostnadsers„ttningar och f”rm†ner (gruppkonto)"
+#KONTO 7310 "Kontanta extraers„ttningar"
+#KONTO 7311 "Ers„ttningar f”r sammantr„den m.m."
+#KONTO 7312 "Ers„ttningar f”r f”rslagsverksamhet och uppfinningar"
+#KONTO 7313 "Ers„ttningar f”r/bidrag till bostadskostnader"
+#KONTO 7314 "Ers„ttningar f”r/bidrag till m†ltidskostnader"
+#KONTO 7315 "Ers„ttningar f”r/bidrag till resor till och fr†n arbetsplat"
+#KONTO 7316 "Ers„ttningar f”r/bidrag till arbetskl„der"
+#KONTO 7317 "Ers„ttningar f”r/bidrag till arbetsmaterial och arbetsverkt"
+#KONTO 7318 Felr„kningspengar
+#KONTO 7319 "™vriga kontanta extraers„ttningar"
+#KONTO 7320 "Traktamenten vid tj„nsteresa"
+#KONTO 7321 "Skattefria traktamenten, Sverige"
+#KONTO 7322 "Skattepliktiga traktamenten, Sverige"
+#KONTO 7323 "Skattefria traktamenten, utlandet"
+#KONTO 7324 "Skattepliktiga traktamenten, utlandet"
+#KONTO 7330 Bilers„ttningar
+#KONTO 7331 "Skattefria bilers„ttningar"
+#KONTO 7332 "Skattepliktiga bilers„ttningar"
+#KONTO 7333 "Ers„ttning f”r tr„ngselskatt, skattefri"
+#KONTO 7350 "Ers„ttningar f”r f”reskrivna arbetskl„der"
+#KONTO 7370 Representationsers„ttningar
+#KONTO 7380 "Kostnader f”r f”rm†ner till anst„llda"
+#KONTO 7381 "Kostnader f”r fri bostad"
+#KONTO 7382 "Kostnader f”r fria eller subventionerade m†ltider"
+#KONTO 7383 "Kostnader f”r fria resor till och fr†n arbetsplatsen"
+#KONTO 7384 "Kostnader f”r fria eller subventionerade arbetskl„der"
+#KONTO 7385 "Kostnader f”r fri bil"
+#KONTO 7386 "Subventionerad r„nta"
+#KONTO 7387 "Kostnader f”r l†nedatorer"
+#KONTO 7388 "Anst„lldas ers„ttning f”r erh†llna f”rm†ner"
+#KONTO 7389 "™vriga kostnader f”r f”rm†ner"
+#KONTO 7390 "™vriga kostnadsers„ttningar och f”rm†ner"
+#KONTO 7391 "Kostnad f”r tr„ngselskattef”rm†n"
+#KONTO 7392 "Kostnad f”r f”rm†n av hush†llsn„ra tj„nster"
+#KONTO 7399 "Motkontering f”rm†ner"
+#KONTO 7400 "Pensionskostnader (gruppkonto)"
+#KONTO 7410 Pensionsf”rs„kringspremier
+#KONTO 7411 "Premier f”r kollektiva pensionsf”rs„kringar"
+#KONTO 7412 "Premier f”r individuella pensionsf”rs„kringar"
+#KONTO 7418 "terb„ring fr†n f”rs„kringsf”retag"
+#KONTO 7420 "F”r„ndring av pensionsskuld"
+#KONTO 7430 "Avdrag f”r r„ntedel i pensionskostnad"
+#KONTO 7440 "F”r„ndring av pensionsstiftelsekapital"
+#KONTO 7441 "Avs„ttning till pensionsstiftelse"
+#KONTO 7448 "Gottg”relse fr†n pensionsstiftelse"
+#KONTO 7460 Pensionsutbetalningar
+#KONTO 7461 "Pensionsutbetalningar till f.d. kollektivanst„llda"
+#KONTO 7462 "Pensionsutbetalningar till f.d. tj„nstem„n"
+#KONTO 7463 "Pensionsutbetalningar till f.d. f”retagsledare"
+#KONTO 7470 "F”rvaltnings- och kreditf”rs„kringsavgifter"
+#KONTO 7490 "™vriga pensionskostnader"
+#KONTO 7500 "Sociala och andra avgifter enligt lag och avtal (gruppkonto"
+#KONTO 7510 "Lagstadgade sociala avgifter"
+#KONTO 7511 "Sociala avgifter f”r l”ner och ers„ttningar"
+#KONTO 7512 "Sociala avgifter f”r f”rm†nsv„rden"
+#KONTO 7513 "Arbetsgivaravgift avdrag forskning"
+#KONTO 7514 "Arbetsgivaravgift f”rsta anst„lld"
+#KONTO 7515 "Sociala avgifter p† skattepliktiga kostnadsers„ttningar"
+#KONTO 7516 "Sociala avgifter p† arvoden"
+#KONTO 7518 "Sociala avgifter p† bruttol”neavdrag m.m."
+#KONTO 7519 "Sociala avgifter f”r semester- och l”neskulder"
+#KONTO 7520 "Arbetsgivaravgifter (nya pensionssystemet)"
+#KONTO 7521 "Arbetsgivaravgifter f”r l”ner och ers„ttningar (nya pension"
+#KONTO 7522 "Arbetsgivaravgifter f”r f”rm†nsv„rden (nya pensionssystemet"
+#KONTO 7525 "Arbetsgivaravgifter p† skattepliktiga kostnadsers„ttningar "
+#KONTO 7526 "Arbetsgivaravgifter p† arvoden (nya pensionssystemet)"
+#KONTO 7528 "Arbetsgivaravgifter p† bruttol”neavdrag m.m. (nya pensionss"
+#KONTO 7529 "Arbetsgivaravgifter f”r semester- och l”neskulder (nya pens"
+#KONTO 7530 "S„rskild l”neskatt"
+#KONTO 7531 "S„rskild l”neskatt f”r vissa f”rs„kringsers„ttningar m.m."
+#KONTO 7532 "S„rskild l”neskatt pensionskostnader, deklarationspost"
+#KONTO 7533 "S„rskild l”neskatt f”r pensionskostnader"
+#KONTO 7550 "Avkastningsskatt p† pensionsmedel"
+#KONTO 7560 "Arbetsgivaravgifter under 26 †r"
+#KONTO 7570 "Premier f”r arbetsmarknadsf”rs„kringar"
+#KONTO 7571 "Arbetsmarknadsf”rs„kringar f”rs„kringsavgifter"
+#KONTO 7572 "Arbetsmarknadsf”rs„kringar pensionsf”rs„kringspremier, dekl"
+#KONTO 7573 "Arbetsmarknadsf”rs„kringar, betalda premier och avgifter"
+#KONTO 7580 Gruppf”rs„kringspremier
+#KONTO 7581 Grupplivf”rs„kringspremier
+#KONTO 7582 Gruppsjukf”rs„kringspremier
+#KONTO 7583 Gruppolycksfallsf”rs„kringspremier
+#KONTO 7589 "™vriga gruppf”rs„kringspremier"
+#KONTO 7590 "™vriga sociala och andra avgifter enligt lag och avtal"
+#KONTO 7600 "™vriga personalkostnader (gruppkonto)"
+#KONTO 7610 Utbildning
+#KONTO 7620 "Sjuk- och h„lsov†rd"
+#KONTO 7621 "Sjuk- och h„lsov†rd, avdragsgill"
+#KONTO 7622 "Sjuk- och h„lsov†rd, ej avdragsgill"
+#KONTO 7623 "Sjukv†rdsf”rs„kring, ej avdragsgill"
+#KONTO 7630 Personalrepresentation
+#KONTO 7631 "Personalrepresentation, avdragsgill"
+#KONTO 7632 "Personalrepresentation, ej avdragsgill"
+#KONTO 7650 Sjukl”nef”rs„kring
+#KONTO 7670 "F”r„ndring av personalstiftelsekapital"
+#KONTO 7671 "Avs„ttning till personalstiftelse"
+#KONTO 7678 "Gottg”relse fr†n personalstiftelse"
+#KONTO 7690 "™vriga personalkostnader"
+#KONTO 7693 Fritidsverksamhet
+#KONTO 7831 "Avskrivningar p† maskiner och andra tekniska anl„ggningar"
+#KONTO 7832 "Avskrivningar p† inventarier och verktyg"
+#KONTO 7904 "™resbortfall vid momsdeklaration"
+#KONTO 7960 "Valutakursf”rluster p† fordringar och skulder av r”relsekar"
+#KONTO 7973 "F”rlust vid avyttring av maskiner och inventarier"
+#KONTO 8314 "Skattefria r„nteint„kter"
+#KONTO 8330 "Valutakursdifferenser p† kortfristiga fordringar och placer"
+#KONTO 8400 "R„ntekostnader (gruppkonto)"
+#KONTO 8422 "Dr”jsm†lsr„ntor f”r leverant”rsskulder"
+#KONTO 8423 "R„ntekostnader f”r skatter och avgifter"
+#KONTO 8430 "Valutakursdifferenser p† skulder"
+#KONTO 8811 "Avs„ttning till periodiseringsfond"
+#KONTO 8819 "terf”ring fr†n periodiseringsfond"
+#KONTO 8850 "F”r„ndring av ”veravskrivningar"
+#KONTO 8910 "Skatt som belastar †rets resultat"
+#KONTO 8999 "rets resultat"
+
+#IB 0 1385 330500.00
+#IB 0 1630 47735.00
+#IB 0 1930 4864.85
+#IB 0 1942 464.66
+#IB 0 2081 -50000.00
+#IB 0 2091 -80627.96
+#IB 0 2099 492.34
+#IB 0 2125 -58614.00
+#IB 0 2510 -44745.00
+#IB 0 2650 1342.00
+#IB 0 2893 -1411.89
+#IB 0 2898 -150000.00
+
+#UB 0 1385 330500.00
+#UB 0 1630 4149.00
+#UB 0 1930 3023.85
+#UB 0 1942 468.10
+#UB 0 2081 -50000.00
+#UB 0 2091 -80627.96
+#UB 0 2098 492.34
+#UB 0 2099 390.56
+#UB 0 2125 -53306.00
+#UB 0 2650 961.00
+#UB 0 2893 -6050.89
+#UB 0 2898 -150000.00
+
+#RES 0 5400 3711.20
+#RES 0 5420 135.25
+#RES 0 5902 772.00
+#RES 0 6570 900.00
+#RES 0 7904 0.55
+#RES 0 8314 179.56
+#RES 0 8819 -5308.00
+#RES 0 8999 -390.56
+
+#IB -1 1385 100000.00
+#IB -1 1630 18773.00
+#IB -1 1930 315154.85
+#IB -1 2081 -50000.00
+#IB -1 2091 -71880.00
+#IB -1 2099 -158747.96
+#IB -1 2125 -67799.00
+#IB -1 2440 -71.00
+#IB -1 2510 -107326.00
+#IB -1 2518 44000.00
+#IB -1 2650 2813.00
+#IB -1 2710 -10937.00
+#IB -1 2731 -12568.00
+#IB -1 2893 -1411.89
+
+#UB -1 1385 330500.00
+#UB -1 1630 47735.00
+#UB -1 1930 4864.85
+#UB -1 1942 464.66
+#UB -1 2081 -50000.00
+#UB -1 2091 -80627.96
+#UB -1 2099 492.34
+#UB -1 2125 -58614.00
+#UB -1 2510 -44745.00
+#UB -1 2650 1342.00
+#UB -1 2893 -1411.89
+#UB -1 2898 -150000.00
+
+#RES -1 5400 3469.60
+#RES -1 5420 1788.00
+#RES -1 5902 712.00
+#RES -1 6570 1500.00
+#RES -1 6990 60.00
+#RES -1 6992 625.00
+#RES -1 7693 1971.70
+#RES -1 7904 0.70
+#RES -1 8314 -551.66
+#RES -1 8423 102.00
+#RES -1 8819 -9185.00
+#RES -1 8999 -492.34
