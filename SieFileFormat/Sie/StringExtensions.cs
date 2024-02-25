@@ -3,14 +3,14 @@
 public static class StringExtensions
 {
     /// <summary>
-    /// Splits the string by specified separator, but only when the separator is outside quotes or brackets.
+    /// Splits the string by space/tab, but only when the separator is outside quotes or brackets.
     /// </summary>
     /// <param name="source">The source string to separate.</param>
     /// <param name="splitChars">The characters used to split strings.</param>
     /// <param name="trimSplits">If set to <c>true</c>, split strings are trimmed (whitespaces are removed).</param>
     /// <param name="ignoreEmptyResults">If set to <c>true</c>, empty split results are ignored (not included in the result).</param>
     /// <param name="preserveEscapeCharInQuotes">If set to <c>true</c>, then the escape character (\) used to escape e.g. quotes is included in the results.</param>
-    public static string[] SplitOutsideQuotes(this string source, char[] separators = null, bool trimSplits = false, bool ignoreEmptyResults = true, bool preserveEscapeCharInQuotes = false)
+    public static string[] SplitSieLine(this string source, char[] separators = null, bool trimSplits = false, bool ignoreEmptyResults = true, bool preserveEscapeCharInQuotes = false)
     {
         // new[] { ' ', '\t' }, false, true, false
         if (source == null) return Array.Empty<string>();

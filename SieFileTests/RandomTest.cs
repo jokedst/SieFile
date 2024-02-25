@@ -20,18 +20,18 @@ public class RandomTest
     [Test]
     public void CanParseSieLines()
     {
-        var parts = "#TYPE  param1 \t  \"param 2\"".SplitOutsideQuotes();
+        var parts = "#TYPE  param1 \t  \"param 2\"".SplitSieLine();
         Assert.That(parts, Has.Length.EqualTo(3));
         Assert.That(parts, Is.EqualTo(new[] { "#TYPE", "param1", "param 2" }));
 
-        parts = "#PROSA  \\\"muu\\\"\t\t\t123\t hej\"citat  sträng4 sträng5".SplitOutsideQuotes();
+        parts = "#PROSA  \\\"muu\\\"\t\t\t123\t hej\"citat  sträng4 sträng5".SplitSieLine();
         Assert.That(parts, Is.EqualTo(new[] { "#PROSA", "\"muu\"", "123", "hej\"citat", "sträng4", "sträng5" }));
     }
 
     [Test]
     public void CanParseSieLinesWithEmptyFields()
     {
-        var parts = "#TYPE \"\"   \"\" fourth".SplitOutsideQuotes();
+        var parts = "#TYPE \"\"   \"\" fourth".SplitSieLine();
         Assert.That(parts, Has.Length.EqualTo(4));
         Assert.That(parts, Is.EqualTo(new[] { "#TYPE", "", "", "fourth" }));
     }
@@ -39,12 +39,12 @@ public class RandomTest
     [Test]
     public void CanParseSieLinesWithBrackets()
     {
-        var parts = "#TYPE {param1 muu } hello".SplitOutsideQuotes();
+        var parts = "#TYPE {param1 muu } hello".SplitSieLine();
         Assert.That(parts, Has.Length.EqualTo(3));
         Assert.That(parts, Is.EqualTo(new[] { "#TYPE", "{param1 muu }", "hello" }));
 
 
-        parts = "#TY{PE \"{ in quotes \" {param1 \"muu muu\" } hello".SplitOutsideQuotes();
+        parts = "#TY{PE \"{ in quotes \" {param1 \"muu muu\" } hello".SplitSieLine();
         Assert.That(parts, Is.EqualTo(new[] { "#TY{PE", "{ in quotes ", "{param1 \"muu muu\" }", "hello" }));
     }
 }

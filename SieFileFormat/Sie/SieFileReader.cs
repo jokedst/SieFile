@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
+
 /// <summary>
 /// Read a SIE file (type 1-4).
 /// </summary>
@@ -51,7 +52,7 @@ public class SieFileReader
                 continue;
             }
 
-            _parts = line.SplitOutsideQuotes();
+            _parts = line.SplitSieLine();
             var rowType = _parts[0];
             foundTypes.Add(rowType);
 
@@ -184,7 +185,7 @@ public class SieFileReader
                         
                         if(!Assert(_parts[3].StartsWith('{') && _parts[3].EndsWith('}'), $"{rowType} dimensions invalid")) break;
                         var dimString = _parts[3].Substring(1, _parts[3].Length - 2);
-                        var dimParts = dimString.SplitOutsideQuotes();
+                        var dimParts = dimString.SplitSieLine();
                         Assert(dimParts.Length % 2 == 0, $"{rowType} dimensions invalid");
                         var dimensions = new Dictionary<string, string>();
                         for (var i = 0; i < dimParts.Length / 2; i++)
@@ -230,7 +231,7 @@ public class SieFileReader
                             continue;
                         }
 
-                        _parts = line.SplitOutsideQuotes();
+                        _parts = line.SplitSieLine();
                         rowType = _parts[0];
                         foundTypes.Add(rowType);
                         switch (rowType)
@@ -400,7 +401,7 @@ public class SieFileReader
     {
         if (Required(index) == null || 
             !Assert(_parts[index].StartsWith('{') && _parts[index].EndsWith('}'), $"Post '{_parts[0]}' dimensions invalid")) return null;
-        var dimParts = _parts[index][1..^1].SplitOutsideQuotes();
+        var dimParts = _parts[index][1..^1].SplitSieLine();
         Assert(dimParts.Length % 2 == 0, $"Post '{_parts[0]}' dimensions invalid");
         var dimensions = new Dictionary<string, string>();
         for (var i = 0; i < dimParts.Length / 2; i++)
