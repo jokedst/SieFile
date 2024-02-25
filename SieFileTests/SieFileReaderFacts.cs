@@ -1,25 +1,27 @@
+using System.Reflection.PortableExecutable;
+
 namespace SieFileTests;
 
 public class SieFileReaderFacts
 {
+    private readonly SieFileReader reader = new SieFileReader();
     [Test]
     public void CanReadSimpleFile()
     {
         var sieData = @"#FLAGGA 0 
-#MUU 123".To437Stream();
+#MUU 123"
+        .To437Stream();
 
-        var sie = new SieFile();
-        sie.Read(sieData, "muu.si");
+        var sie = reader.Read(sieData, "muu.si");
 
-        Assert.That(sie.Errors.Count, Is.EqualTo(0));
-        Assert.That(sie.Warnings.Count, Is.EqualTo(0));
+        Assert.That(reader.Errors.Count, Is.EqualTo(0));
+        Assert.That(reader.Warnings.Count, Is.EqualTo(0));
     }
 
     [Test]
     public void ErrorOnUnclosedVER()
     {
-        var sie = new SieFile();
-        sie.Read(@"#FLAGGA 0 
+        var sie = reader.Read(@"#FLAGGA 0 
 #VER A 1 20210105 Kaffebröd 20210310
 {
    #TRANS 1910 {} -195.00
@@ -27,9 +29,9 @@ public class SieFileReaderFacts
 
         Assert.Multiple(() =>
         {
-            Assert.That(sie.Errors, Has.Count.GreaterThanOrEqualTo(1));
-            Assert.That(sie.Errors[0], Is.EqualTo("Post #VER was not closed with a '}' (row 5)"));
-            Assert.That(sie.Warnings, Is.Empty);
+            Assert.That(reader.Errors, Has.Count.GreaterThanOrEqualTo(1));
+            Assert.That(reader.Errors[0], Is.EqualTo("Post #VER was not closed with a '}' (row 5)"));
+            Assert.That(reader.Warnings, Is.Empty);
         });
     }
 
@@ -86,12 +88,11 @@ public class SieFileReaderFacts
 "
 .To437Stream();
 
-        var sie = new SieFile();
-        sie.Read(sieData, "foo.si");
+        var sie = reader.Read(sieData, "foo.si");
         Assert.Multiple(() =>
         {
-            Assert.That(sie.Errors, Is.Empty);
-            Assert.That(sie.Warnings, Is.Empty);
+            Assert.That(reader.Errors, Is.Empty);
+            Assert.That(reader.Warnings, Is.Empty);
             Assert.That(sie.AlreadyImportedFlag, Is.EqualTo(false));
             Assert.IsTrue(sie.Balances.Any(x => x.IncomingBalance && x.Dimensions?.ContainsKey("7") == true && x.Dimensions["7"] == "KalleB" && x.Quantity==6 && x.Amount == 1000.01m));
             Assert.That(sie.Balances.Any(x => !x.IncomingBalance && x.Dimensions?.ContainsKey("7") == true && x.Dimensions["7"] == "KalleB" && x.Quantity == 1.3m && x.Amount == 999));
@@ -155,12 +156,11 @@ public class SieFileReaderFacts
 "
 .To437Stream();
 
-        var sie = new SieFile();
-        sie.Read(sieData, "foo.se");
+        var sie = reader.Read(sieData, "foo.se");
         Assert.Multiple(() =>
         {
-            Assert.That(sie.Errors, Is.Empty);
-            Assert.That(sie.Warnings, Is.Empty);
+            Assert.That(reader.Errors, Is.Empty);
+            Assert.That(reader.Warnings, Is.Empty);
             Assert.That(sie.AlreadyImportedFlag, Is.EqualTo(false));
         });
     }

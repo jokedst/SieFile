@@ -7,7 +7,7 @@ using System.Text;
 
 Console.WriteLine("Hello, World!");
 
-var sieReader = new SieFile();
+var sieReader = new SieFileReader();
 sieReader.Read(File.OpenRead(@"SIE4 Exempelfil.SE"), ".SE");
 
 
