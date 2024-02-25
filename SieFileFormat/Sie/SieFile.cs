@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 
 /// <summary>
@@ -32,6 +33,7 @@ public class SieFile
     public List<ObjectAmount> PeriodChanges { get; set; } = [];
     public List<string> Notes { get; set; } = [];
     public Dictionary<string, (string StartDate, string EndDate)> Years { get; set; } = [];
+    public List<Verification> Verifications { get; set; } = [];
 
     public IList<string> Errors => _errors;
     public IList<string> Warnings => _warnings;
@@ -61,8 +63,6 @@ public class SieFile
     private string[] _parts;
     private int _rowNumber;
 
-
-
     /// <summary>
     /// Reads a SIE file of type 1-4
     /// </summary>
@@ -78,6 +78,7 @@ public class SieFile
         Dimensions.Clear();
         Accounts.Clear();
         _rowNumber = 0;
+        Verifications.Clear();
         //TODO: Clear the rest :P
         var foundTypes = new HashSet<string>();
 
@@ -171,9 +172,9 @@ public class SieFile
                     }
                     break;
                 case "#KTYP":
-                    if (!AssertParameters(2) || 
-                        WarnIf(!this.Accounts.ContainsKey(_parts[1]), $"Account {_parts[1]} is not declared") || 
-                        WarnIf(!new[] { "T", "S", "K", "I" }.Contains(_parts[2]),$"Account type {_parts[2]} is unknown"))
+                    if (!AssertParameters(2) ||
+                        WarnIf(!this.Accounts.ContainsKey(_parts[1]), $"Account {_parts[1]} is not declared") ||
+                        !Assert(new[] { "T", "S", "K", "I" }.Contains(_parts[2]), $"Account type {_parts[2]} is unknown"))
                         break;
                     this.Accounts[_parts[1]].Type = _parts[2][0];
                     break;
@@ -256,18 +257,60 @@ public class SieFile
                     }
                     break;
                 case "#VER":
+                    AssertParameters(3);
+                    var entry = new Verification(Optional(1), Optional(2), ParseDate(3) ?? DateOnly.MinValue, Optional(4), ParseDate(5, false), Optional(6));
+                    Verifications.Add(entry);
+                    var firstRow = true;
+                    var verRowNumber = 0;
                     while ((line = sr.ReadLine()) != null)
                     {
                         _rowNumber++;
-                        if (line.Trim() == "}")
-                            break;
+                        if (string.IsNullOrWhiteSpace(line)) continue; // Empty lines are allowed and should be ignored.
+                        line = line.TrimStart();
+                        if (firstRow)
+                        {
+                            if (!Assert(line.Trim() == "{", "Post #VER was not followed by '{'")) break;
+                            firstRow = false;
+                            continue;
+                        }
+                        if (line.Trim() == "}") break;
+                        if (line[0] != '#')
+                        {
+                            _warnings.Add($"Row {_rowNumber} does not start with a '#'");
+                            continue;
+                        }
+
+                        _parts = line.SplitOutsideQuotes();
+                        rowType = _parts[0];
+                        foundTypes.Add(rowType);
+                        switch (rowType)
+                        {
+                            case "#TRANS": if (AssertParameters(3))
+                                {
+                                    entry.Rows.Add(new VerificationRow(_parts[1], ParseDictionary(2), Decimal(3), ParseDate(4, false), Optional(5), _parts.Length > 6 ? Decimal(6) : null, Optional(7), verRowNumber++));
+                                }
+                                break;
+                            // RTRANS and BTRANS is keeping track of history if a verificate has been changed. 
+                            case "#RTRANS":
+                                if (AssertParameters(3))
+                                {
+                                    entry.AddedRows.Add(new VerificationRow(_parts[1], ParseDictionary(2), Decimal(3), ParseDate(4, false), Optional(5), _parts.Length > 6 ? Decimal(6) : null, Optional(7), verRowNumber));
+                                }
+                                break;
+                            case "#BTRANS":
+                                if (AssertParameters(3))
+                                {
+                                    entry.RemovedRows.Add(new VerificationRow(_parts[1], ParseDictionary(2), Decimal(3), ParseDate(4, false), Optional(5), _parts.Length > 6 ? Decimal(6) : null, Optional(7), verRowNumber));                                    
+                                }
+                                break;
+                            default: break; // Unknown key words should be ignored.
+                        }
                     }
-                    Assert(line?.Trim() == "}", "File ended without closing #VER post");                  
+                    Assert(line?.Trim() == "}", "Post #VER was not closed with a '}'");
+                    Assert(entry.Rows.Sum(r => r.Amount) == 0, "Post #VER sum of rows is not zero");
                     break;
-                case "#TRANS":
-                case "#RTRANS":
-                case "#BTRANS":
-                case "#KSUMMA":
+                case "#KSUMMA": // This is for calculating and verifying a CRC32 checksum. Not seen in the wild. Might implement later.
+                    break;
                 default: break; // Unknown key words should be ignored.
             }
         }
@@ -348,6 +391,25 @@ public class SieFile
         if (_parts[index].Length != 6 || !DateOnly.TryParseExact(_parts[index], "yyyyMM", out _))
             _errors.Add($"Post '{_parts[0]}' parameter {index} ('{_parts[index]}') is not a valid period. (row {_rowNumber})");
         return _parts[index];
+    }
+
+    /// <summary>
+    /// Ensures parameter exists, and is a valid date.
+    /// </summary>
+    private DateOnly? ParseDate(int index, bool required = true)
+    {
+        if (required && Required(index) == null) return null;
+
+        if (_parts?.Length <= index || _parts[index] == null)
+            return null;
+
+        if (!DateOnly.TryParseExact(_parts[index], "yyyyMMdd", out var result))
+        { 
+            if(required)
+                _errors.Add($"Post '{_parts[0]}' parameter {index} ('{_parts[index]}') is not a valid date. (row {_rowNumber})");
+            return null;
+        }
+        return result;
     }
 
     /// <summary>
@@ -458,7 +520,7 @@ public class Balance
 }
 
 /// <summary>
-/// Represents the balance of an account or object at a given time.
+/// Represents the balance or result of an account or object at a given time.
 /// </summary>
 public class ObjectAmount
 {
@@ -508,4 +570,57 @@ public enum SieFileType
     Type3,
     Type4I,
     Type4E
+}
+
+/// <summary>
+/// Represents an entry in the ledger, with a set of balancing rows
+/// </summary>
+public class Verification
+{
+    public Verification(string series, string voucherNumber, DateOnly date, string text, DateOnly? registrationDate, string user)
+    {
+        Series = series;
+        VoucherNumber = voucherNumber;
+        Date = date;
+        Text = text;
+        RegistrationDate = registrationDate;
+        User = user;
+    }
+
+    public string Series {  get; set; }
+    public string VoucherNumber { get; set; }
+    public DateOnly Date { get; set; }
+    public string Text { get; set; }
+    public DateOnly? RegistrationDate { get; set; }
+    public string User { get; set; }
+    public List<VerificationRow> Rows { get; set; } = [];
+    /// <summary> If the verificate has been modified, this will contain a copy of all added rows, with info about who did the change. This can be ignored, it's only history. </summary>
+    public List<VerificationRow> AddedRows { get; set; } = [];
+    /// <summary> If the verificate has been modified, this will contain the original rows before change. This can be ignored, it's only history. </summary>
+    public List<VerificationRow> RemovedRows { get; set; } = [];
+}
+
+public class VerificationRow
+{
+    public VerificationRow(string account, Dictionary<string, string> dimensions, decimal amount, DateOnly? transactionDate, string text, decimal? quantity, string User, int rowNumber)
+    {
+        Account = account;
+        Dimensions = dimensions;
+        Amount = amount;
+        TransactionDate = transactionDate;
+        Text = text;
+        Quantity = quantity;
+        this.User = User;
+        RowNumber = rowNumber;
+    }
+
+    public string Account { get; }
+    public Dictionary<string, string> Dimensions { get; }
+    public decimal Amount { get; }
+    public DateOnly? TransactionDate { get; }
+    public string Text { get; }
+    public decimal? Quantity { get; }
+    public string User { get; }
+    /// <summary> Used to keep track of where added and removed rows belong. </summary>
+    public int RowNumber { get; set; }
 }

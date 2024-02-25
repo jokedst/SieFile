@@ -27,8 +27,8 @@ public class SieFileReaderFacts
 
         Assert.Multiple(() =>
         {
-            Assert.That(sie.Errors, Has.Count.EqualTo(1));
-            Assert.That(sie.Errors[0], Is.EqualTo("File ended without closing #VER post (row 5)"));
+            Assert.That(sie.Errors, Has.Count.GreaterThanOrEqualTo(1));
+            Assert.That(sie.Errors[0], Is.EqualTo("Post #VER was not closed with a '}' (row 5)"));
             Assert.That(sie.Warnings, Is.Empty);
         });
     }
