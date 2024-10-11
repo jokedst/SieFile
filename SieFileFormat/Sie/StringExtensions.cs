@@ -14,7 +14,7 @@ public static class StringExtensions
     {
         // new[] { ' ', '\t' }, false, true, false
         if (source == null) return Array.Empty<string>();
-        if(separators == null) separators = [' ', '\t'];
+        separators ??= [' ', '\t'];
 
         var result = new List<string>();
         var escapeFlag = false;
@@ -75,7 +75,7 @@ public static class StringExtensions
             }
         }
 
-        if (escapeFlag) currentItem.Append("\\");
+        if (escapeFlag) currentItem.Append('\\');
 
         var lastCurrentItemString = trimSplits ? currentItem.ToString().Trim() : currentItem.ToString();
         if (!(string.IsNullOrEmpty(lastCurrentItemString) && ignoreEmptyResults && !hadQuotes)) result.Add(lastCurrentItemString);

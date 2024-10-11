@@ -1,11 +1,9 @@
-using System.Reflection.PortableExecutable;
-using NUnit.Framework;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace SieFileTests;
 
 public class SieFileReaderFacts
 {
-    private readonly SieFileReader reader = new SieFileReader();
+    private readonly SieFileReader reader = new();
+
     [Test]
     public void CanReadSimpleFile()
     {
@@ -15,8 +13,9 @@ public class SieFileReaderFacts
 
         var sie = reader.Read(sieData, "muu.si");
 
-        Assert.That(reader.Errors.Count, Is.EqualTo(0));
-        Assert.That(reader.Warnings.Count, Is.EqualTo(0));
+        Assert.That(reader.Errors, Is.Empty);
+        Assert.That(reader.Warnings, Is.Empty);
+        Assert.That(!sie.AlreadyImportedFlag);
     }
 
     [Test]
@@ -28,8 +27,10 @@ public class SieFileReaderFacts
 
         var sie = reader.Read(sieData, "muu.si");
 
-        Assert.That(reader.Errors.Count, Is.EqualTo(0));
-        Assert.That(reader.Warnings.Count, Is.EqualTo(0));
+        Assert.That(reader.Errors, Is.Empty);
+        Assert.That(reader.Warnings, Is.Empty);
+        Assert.That(!sie.AlreadyImportedFlag);
+        Assert.That(sie.Accounts, Has.Count.EqualTo(1));
     }
 
     [Test]

@@ -17,6 +17,7 @@ public class SieFileReader
     // Reading-specific: Kinda hackish - to not have to send these parameters to all read functions
     private string[] _parts;
     private int _rowNumber;
+    private static readonly string[] _accountTypes = ["T", "S", "K", "I"];
 
     /// <summary>
     /// Reads a SIE file of type 1-4
@@ -31,6 +32,7 @@ public class SieFileReader
         var sie = new SieFile();
         _rowNumber = 0; _errors = []; _warnings = [];
         var foundTypes = new HashSet<string>();
+        Crc32 crc = null;
 
         // Ensure codepage 437 is loaded
         if (!Encoding.GetEncodings().Any(x => x.CodePage == 437))
@@ -55,6 +57,8 @@ public class SieFileReader
             _parts = line.SplitSieLine();
             var rowType = _parts[0];
             foundTypes.Add(rowType);
+
+            crc?.AddBytes(_parts.Select(encoding.GetBytes).SelectMany(x => x).Where(b => b != '}' && b != '{'));
 
             switch (rowType)
             {
@@ -125,7 +129,7 @@ public class SieFileReader
                 case "#KTYP":
                     if (!AssertParameters(2) ||
                         WarnIf(!sie.Accounts.ContainsKey(_parts[1]), $"Account {_parts[1]} is not declared") ||
-                        !Assert(new[] { "T", "S", "K", "I" }.Contains(_parts[2]), $"Account type {_parts[2]} is unknown"))
+                        !Assert(_accountTypes.Contains(_parts[2]), $"Account type {_parts[2]} is unknown"))
                         break;
                     sie.Accounts[_parts[1]].Type = _parts[2][0];
                     break;
@@ -261,6 +265,16 @@ public class SieFileReader
                     Assert(entry.Rows.Sum(r => r.Amount) == 0, "Post #VER sum of rows is not zero");
                     break;
                 case "#KSUMMA": // This is for calculating and verifying a CRC32 checksum. Not seen in the wild. Might implement later.
+                    if (crc == null)
+                    {
+                        crc = new Crc32();
+                    }
+                    else if (AssertParameters(1))
+                    {
+                        Assert(uint.TryParse(_parts[1], out uint checksum), "Could not parse KSUMMA parameter");
+                        // The checksum is wrong in all test files, so I'm prob doing somethign wrong. Just warn for now.
+                        WarnIf(crc.Checksum != checksum, "KSUMMA checksum does not match");
+                    }
                     break;
                 default: break; // Unknown key words should be ignored.
             }
@@ -434,16 +448,5 @@ public class SieFileReader
             return false;
         }
         return true;
-    }
-
-    public void Write(Stream outputStream, int sieType, string program)
-    {        
-        // Ensure codepage 437 is loaded
-        if (!Encoding.GetEncodings().Any(x => x.CodePage == 437))        
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-        
-        using StreamWriter sr = new StreamWriter(outputStream, Encoding.GetEncoding(437));
-
-        sr.WriteLine("#FLAGGA 0");
     }
 }

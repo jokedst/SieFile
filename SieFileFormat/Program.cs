@@ -1,14 +1,11 @@
-﻿using System.IO;
-using System.Reflection.PortableExecutable;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-
-
-
-Console.WriteLine("Hello, World!");
+﻿using System.Text;
 
 var sieReader = new SieFileReader();
+
+Console.WriteLine("Testing SIE files");
+
+TestFile(@"C:\Users\joawen\Source\Repos\SieFile\SieFileTests\sie_test_files\Norstedts Bokslut SIE 4I.si");
+
 sieReader.Read(File.OpenRead(@"SIE4 Exempelfil.SE"), ".SE");
 
 
@@ -21,7 +18,6 @@ var enc = System.Text.Encoding.GetEncoding(437);
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 var lines = File.ReadAllLines(@"SIE4 Exempelfil.SE", enc);
 
-Crc32 crc32 = new Crc32();
 
 
 foreach (var line in lines)
@@ -42,4 +38,8 @@ void TestFile(string filename)
     {
         Console.WriteLine("WARN:" + Path.GetFileName(filename) + ": " + warning);
     }
+
+    Console.WriteLine($"Read file '{Path.GetFileName(filename)}'");
+    Console.WriteLine($"File had {sie.Accounts.Count} accounts" );
+    Console.WriteLine("File had {0} verifications", sie.Verifications.Count);
 }
