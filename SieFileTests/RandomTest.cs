@@ -37,6 +37,14 @@ public class RandomTest
     }
 
     [Test]
+    public void CanParseSieLinesWithEmptyFieldsAtTheEnd()
+    {
+        var parts = "#TYPE  \"\"".SplitSieLine();
+        Assert.That(parts, Has.Length.EqualTo(2));
+        Assert.That(parts, Is.EqualTo(new[] { "#TYPE", "" }));
+    }
+
+    [Test]
     public void CanParseSieLinesWithBrackets()
     {
         var parts = "#TYPE {param1 muu } hello".SplitSieLine();

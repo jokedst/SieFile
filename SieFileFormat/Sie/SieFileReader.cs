@@ -204,7 +204,7 @@ public class SieFileReader
                 case "#PBUDGET":
                     if (AssertParameters(5))
                     {
-                        sie.PeriodChanges.Add(new ObjectAmount(YearIndex(1), Period(2), AmountTypeForRow(), _parts[3], ParseDictionary(4), Decimal(5), _parts.Length > 6 ? Decimal(6) : null));
+                        sie.PeriodChanges.Add(new ObjectAmount(YearIndex(1), Period(2), AmountTypeForRow(), _parts[3], ParseDictionary(4), Decimal(5), OptionalDecimal(6)));
                     }
                     break;
                 case "#VER":
@@ -238,20 +238,20 @@ public class SieFileReader
                         {
                             case "#TRANS": if (AssertParameters(3))
                                 {
-                                    entry.Rows.Add(new VerificationRow(_parts[1], ParseDictionary(2), Decimal(3), ParseDate(4, false), Optional(5), _parts.Length > 6 ? Decimal(6) : null, Optional(7), verRowNumber++));
+                                    entry.Rows.Add(new VerificationRow(_parts[1], ParseDictionary(2), Decimal(3), ParseDate(4, false), Optional(5), OptionalDecimal(6), Optional(7), verRowNumber++));
                                 }
                                 break;
                             // RTRANS and BTRANS is keeping track of history if a verificate has been changed. 
                             case "#RTRANS":
                                 if (AssertParameters(3))
                                 {
-                                    entry.AddedRows.Add(new VerificationRow(_parts[1], ParseDictionary(2), Decimal(3), ParseDate(4, false), Optional(5), _parts.Length > 6 ? Decimal(6) : null, Optional(7), verRowNumber));
+                                    entry.AddedRows.Add(new VerificationRow(_parts[1], ParseDictionary(2), Decimal(3), ParseDate(4, false), Optional(5), OptionalDecimal(6), Optional(7), verRowNumber));
                                 }
                                 break;
                             case "#BTRANS":
                                 if (AssertParameters(3))
                                 {
-                                    entry.RemovedRows.Add(new VerificationRow(_parts[1], ParseDictionary(2), Decimal(3), ParseDate(4, false), Optional(5), _parts.Length > 6 ? Decimal(6) : null, Optional(7), verRowNumber));                                    
+                                    entry.RemovedRows.Add(new VerificationRow(_parts[1], ParseDictionary(2), Decimal(3), ParseDate(4, false), Optional(5), OptionalDecimal(6), Optional(7), verRowNumber));                                    
                                 }
                                 break;
                             default: break; // Unknown key words should be ignored.
@@ -380,6 +380,19 @@ public class SieFileReader
             return 0;
         }
         return amount;
+    }
+
+    /// <summary>
+    /// Ensures parameter exists, and is a valid decimal number.
+    /// </summary>
+    private decimal? OptionalDecimal(int index)
+    {
+        if ((_parts?.Length > index) && decimal.TryParse(_parts[index], CultureInfo.InvariantCulture, out var amount))
+        {
+            return amount;
+        }
+
+        return null;
     }
 
     private AmountType AmountTypeForRow()

@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SieFileFormat", "SieFileFormat\SieFileFormat.csproj", "{CA4FFDF2-57BC-4DC3-96E8-2F897E0283E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SieFileTests", "SieFileTests\SieFileTests.csproj", "{1F113AA5-E37E-4386-85DC-849387E2A6FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SieFileTests", "SieFileTests\SieFileTests.csproj", "{1F113AA5-E37E-4386-85DC-849387E2A6FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

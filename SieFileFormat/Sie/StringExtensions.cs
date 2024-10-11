@@ -78,7 +78,7 @@ public static class StringExtensions
         if (escapeFlag) currentItem.Append("\\");
 
         var lastCurrentItemString = trimSplits ? currentItem.ToString().Trim() : currentItem.ToString();
-        if (!(string.IsNullOrEmpty(lastCurrentItemString) && ignoreEmptyResults)) result.Add(lastCurrentItemString);
+        if (!(string.IsNullOrEmpty(lastCurrentItemString) && ignoreEmptyResults && !hadQuotes)) result.Add(lastCurrentItemString);
 
         return result.ToArray();
     }

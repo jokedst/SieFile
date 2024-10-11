@@ -1,5 +1,6 @@
 using System.Reflection.PortableExecutable;
-
+using NUnit.Framework;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace SieFileTests;
 
 public class SieFileReaderFacts
@@ -10,6 +11,19 @@ public class SieFileReaderFacts
     {
         var sieData = @"#FLAGGA 0 
 #MUU 123"
+        .To437Stream();
+
+        var sie = reader.Read(sieData, "muu.si");
+
+        Assert.That(reader.Errors.Count, Is.EqualTo(0));
+        Assert.That(reader.Warnings.Count, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void CanReadEmptyName()
+    {
+        var sieData = @"#FLAGGA 0 
+#KONTO 123 """""
         .To437Stream();
 
         var sie = reader.Read(sieData, "muu.si");
@@ -94,7 +108,7 @@ public class SieFileReaderFacts
             Assert.That(reader.Errors, Is.Empty);
             Assert.That(reader.Warnings, Is.Empty);
             Assert.That(sie.AlreadyImportedFlag, Is.EqualTo(false));
-            Assert.IsTrue(sie.Balances.Any(x => x.IncomingBalance && x.Dimensions?.ContainsKey("7") == true && x.Dimensions["7"] == "KalleB" && x.Quantity==6 && x.Amount == 1000.01m));
+            Assert.That(sie.Balances.Any(x => x.IncomingBalance && x.Dimensions?.ContainsKey("7") == true && x.Dimensions["7"] == "KalleB" && x.Quantity==6 && x.Amount == 1000.01m));
             Assert.That(sie.Balances.Any(x => !x.IncomingBalance && x.Dimensions?.ContainsKey("7") == true && x.Dimensions["7"] == "KalleB" && x.Quantity == 1.3m && x.Amount == 999));
         });
     }
@@ -162,6 +176,49 @@ public class SieFileReaderFacts
             Assert.That(reader.Errors, Is.Empty);
             Assert.That(reader.Warnings, Is.Empty);
             Assert.That(sie.AlreadyImportedFlag, Is.EqualTo(false));
+        });
+    }
+
+    [Test]
+    public void CanReadTestFiles()
+    {
+        int errors = 0, warnings = 0;
+        var allErrors = new List<string>();
+        foreach (var filename in Directory.EnumerateFiles(@"..\..\..\sie_test_files"))
+        {
+            using var stream = File.OpenRead(filename);
+            var sie = reader.Read(stream, filename);
+
+            errors += reader.Errors.Count;
+            warnings += reader.Warnings.Count;
+            allErrors.AddRange(reader.Errors.Select(x => Path.GetFileName(filename) + ": " + x));
+            foreach (var error in reader.Errors)
+            {
+                Console.WriteLine("ERROR:" + Path.GetFileName(filename) + ": " + error);
+            }
+            foreach (var warning in reader.Warnings)
+            {
+                Console.WriteLine("WARN:" + Path.GetFileName(filename) + ": " + warning);
+            }
+        }
+
+        Assert.Multiple(() =>
+        {
+            // The test files contain 13 errors
+            Assert.That(errors, Is.EqualTo(13));
+            Assert.That(allErrors, Does.Contain("BL0001_typ4I.SI: Post '#RAR' is missing parameter 2 (row 7)"));
+            Assert.That(allErrors, Does.Contain("BL0001_typ4I.SI: Post '#RAR' is missing parameter 3 (row 7)"));
+            Assert.That(allErrors, Does.Contain("SIE-fil från Visma Enskild Firma 2010.se: Post '#SRU' does not have 2 parameters (row 76)"));
+            Assert.That(allErrors, Does.Contain("SIE-fil från Visma Enskild Firma 2010.se: Post '#SRU' does not have 2 parameters (row 79)"));
+            Assert.That(allErrors, Does.Contain("SIE-fil från Visma Enskild Firma 2010.se: Post '#SRU' does not have 2 parameters (row 82)"));
+            Assert.That(allErrors, Does.Contain("SIE-fil från Visma Enskild Firma 2010.se: Post '#SRU' does not have 2 parameters (row 85)"));
+            Assert.That(allErrors, Does.Contain("Sie4.se: Post '#KTYP' does not have 2 parameters (row 593)"));
+            Assert.That(allErrors, Does.Contain("Sie4.si: Post '#ORGNR' is missing parameter 1 (row 9)"));
+            Assert.That(allErrors, Does.Contain("SIE_exempelfil.se: Post '#ORGNR' is missing parameter 1 (row 8)"));
+            Assert.That(allErrors, Does.Contain("testWrite.se: Post #VER sum of rows is not zero (row 1372)"));
+            Assert.That(allErrors, Does.Contain("testWrite1.se: Post #VER sum of rows is not zero (row 1372)"));
+            Assert.That(allErrors, Does.Contain("transaktioner_ovnbolag-bad-balance.se: Post #VER sum of rows is not zero (row 3910)"));
+            Assert.That(allErrors, Does.Contain("XE_SIE_4_20151125095119.SE: Post #VER sum of rows is not zero (row 1360)"));
         });
     }
 }
