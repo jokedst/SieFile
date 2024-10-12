@@ -4,12 +4,15 @@ var sieReader = new SieFileReader();
 
 Console.WriteLine("Testing SIE files");
 
-TestFile(@"C:\Users\joawen\Source\Repos\SieFile\SieFileTests\sie_test_files\Norstedts Bokslut SIE 4I.si");
+TestFile(@"C:\Users\joawen\Source\Repos\SieFile\SieFileTests\sie_test_files\Norstedts Bokslut SIE 1.se");
+
 
 sieReader.Read(File.OpenRead(@"SIE4 Exempelfil.SE"), ".SE");
 
 
 TestFile(@"D:\Downloads\sitest20240225_031358.si");
+
+TestFile(@"C:\Users\joawen\Source\Repos\SieFile\SieFileTests\sie_test_files\Sie1.se");
 
 
 

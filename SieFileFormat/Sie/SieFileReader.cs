@@ -58,7 +58,8 @@ public class SieFileReader
             var rowType = _parts[0];
             foundTypes.Add(rowType);
 
-            crc?.AddBytes(_parts.Select(encoding.GetBytes).SelectMany(x => x).Where(b => b != '}' && b != '{'));
+            if (rowType != "#KSUMMA")
+                crc?.AddBytes(_parts.Select(encoding.GetBytes).SelectMany(x => x).Where(b => b != '}' && b != '{'));
 
             switch (rowType)
             {
@@ -212,6 +213,7 @@ public class SieFileReader
                         _parts = line.SplitSieLine();
                         rowType = _parts[0];
                         foundTypes.Add(rowType);
+                        crc?.AddBytes(_parts.Select(encoding.GetBytes).SelectMany(x => x).Where(b => b != '}' && b != '{'));
                         switch (rowType)
                         {
                             case "#TRANS": if (AssertParameters(3))
