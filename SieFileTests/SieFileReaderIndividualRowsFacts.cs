@@ -2,7 +2,7 @@
 
 public class SieFileReaderIndividualRowsFacts
 {
-    private SieFileReader reader = new SieFileReader();
+    private SieFileReader reader = new();
 
     [Test]
     public void CanReadValuta()
@@ -17,10 +17,10 @@ public class SieFileReaderIndividualRowsFacts
     [Test]
     public void CanReadSieTyp()
     {
-        var sie = reader.Read(@"#SIETYP".To437Stream(), "muu.si");
+        reader.Read(@"#SIETYP".To437Stream(), "muu.si");
         Assert.That(reader.Errors.Contains("Post '#SIETYP' is missing parameter 1 (row 1)"), Is.True);
 
-        sie = reader.Read(@"#SIETYP 1".To437Stream(), "muu.si");
+        var sie = reader.Read(@"#SIETYP 1".To437Stream(), "muu.si");
         Assert.That(sie.FileType, Is.EqualTo(SieFileType.Type1));
         sie = reader.Read(@"#SIETYP 2".To437Stream(), "muu.si");
         Assert.That(sie.FileType, Is.EqualTo(SieFileType.Type2));

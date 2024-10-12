@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿global using NUnit.Framework;
+using System.Text;
 
 [SetUpFixture]
 public class GlobalFixture

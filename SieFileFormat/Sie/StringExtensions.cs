@@ -10,7 +10,7 @@ public static class StringExtensions
     /// <param name="trimSplits">If set to <c>true</c>, split strings are trimmed (whitespaces are removed).</param>
     /// <param name="ignoreEmptyResults">If set to <c>true</c>, empty split results are ignored (not included in the result).</param>
     /// <param name="preserveEscapeCharInQuotes">If set to <c>true</c>, then the escape character (\) used to escape e.g. quotes is included in the results.</param>
-    public static string[] SplitSieLine(this string source, char[] separators = null, bool trimSplits = false, bool ignoreEmptyResults = true, bool preserveEscapeCharInQuotes = false)
+    public static string[] SplitSieLine(this string source, char[] separators = null, bool trimSplits = false, bool ignoreEmptyResults = true, bool preserveEscapeCharInQuotes = true)
     {
         if (source == null) return [];
         separators ??= [' ', '\t'];

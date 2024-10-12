@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Reflection;
-using System.Runtime.InteropServices;
-
-/// <summary>
+﻿/// <summary>
 /// Represents a SIE file (v 1-4). 
 /// </summary>
 public class SieFile
@@ -21,6 +16,9 @@ public class SieFile
         Years["0"] = (currentYearStart.ToString("yyyyMMdd"), currentYearEnd.Value.ToString("yyyyMMdd"));
     }
 
+    /// <summary>
+    /// Imported flag. Should be set to 0 on write, then on import switched to 1 to avoid importing twice. Totally optional though.
+    /// </summary>
     public bool AlreadyImportedFlag { get; set; }
     public SieFileType FileType { get; set; }
     public string Program { get; set; }
@@ -155,11 +153,26 @@ public enum AmountType
 [Flags]
 public enum SieFileType
 {
-    Type1=1,
-    Type2=2,
-    Type3=4,
-    Type4I=8,
-    Type4E=16
+    /// <summary>
+    /// Export of closing balances. Almost obsolete, but can be used for some old reports.
+    /// </summary>
+    Type1 = 1,
+    /// <summary>
+    /// Export of period end balances.
+    /// </summary>
+    Type2 = 2,
+    /// <summary>
+    /// Export of object balances.
+    /// </summary>
+    Type3 = 4,
+    /// <summary>
+    /// Import of transactions, e.g. a small system that generates some accounting, but not a whole ledger.
+    /// </summary>
+    Type4I = 8,
+    /// <summary>
+    /// Export of transactions and everything else. Used when moving accounting to a new main Ledger.
+    /// </summary>
+    Type4E = 16
 }
 
 /// <summary>
@@ -177,7 +190,7 @@ public class Verification
         User = user;
     }
 
-    public string Series {  get; set; }
+    public string Series { get; set; }
     public string VoucherNumber { get; set; }
     public DateOnly Date { get; set; }
     public string Text { get; set; }

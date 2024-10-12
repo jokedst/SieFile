@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace SieFileTests;
 
 public class SieFileReaderFacts
@@ -112,10 +114,10 @@ public class SieFileReaderFacts
             Assert.That(sie.PeriodSummeries.Any(x => x.Type== AmountType.ObjectIncomingBalance && x.Dimensions?.ContainsKey("7") == true && x.Dimensions["7"] == "KalleB" && x.Quantity==6 && x.Amount == 1000.01m));
             Assert.That(sie.PeriodSummeries.Any(x => x.Type == AmountType.ObjectOutgoingBalance && x.Dimensions?.ContainsKey("7") == true && x.Dimensions["7"] == "KalleB" && x.Quantity == 1.3m && x.Amount == 999));
 
-
             Assert.That(sie.PeriodSummeries.Any(x => x.Type == AmountType.IncomingBalance && x.Account == "1221" && x.Amount == 421457.53m && x.Quantity == null));
             Assert.That(sie.PeriodSummeries.Any(x => x.Type == AmountType.OutgoingBalance && x.Account == "1221" && x.Amount == 518057.53m && x.Quantity == 123.2m));
             Assert.That(sie.PeriodSummeries.Any(x => x.Type == AmountType.Result && x.Account == "3041" && x.Amount == -1690380.20m && x.YearIndex == "0"));
+            Assert.That(sie.PeriodSummeries.Any(x => x.Type == AmountType.Result && x.Account == "4010" && x.Amount == 2300437.22m && x.YearIndex == "-1"));
         });
     }
 
@@ -226,5 +228,47 @@ public class SieFileReaderFacts
             Assert.That(allErrors, Does.Contain("transaktioner_ovnbolag-bad-balance.se: Post #VER sum of rows is not zero (row 3910)"));
             Assert.That(allErrors, Does.Contain("XE_SIE_4_20151125095119.SE: Post #VER sum of rows is not zero (row 1360)"));
         });
+    }
+
+
+    [Test]
+    public void CanReadThenWriteTestFiles()
+    {
+        var allErrors = new List<string>();
+        var writer = new SieFileWriter();
+        Directory.CreateDirectory("testfiles_output");
+        foreach (var filename in Directory.EnumerateFiles(@"..\..\..\sie_test_files"))
+        {
+            using var stream = File.OpenRead(filename);
+            var sie = reader.Read(stream, filename);
+
+            using (var fs = File.OpenWrite(Path.Combine("testfiles_output", Path.GetFileName(filename))))
+            {
+                writer.Write(fs, sie);
+
+            }
+
+            var wstream = new MemoryStream();
+            writer.Write(wstream, sie);
+
+            var content = wstream.GetFileContent();
+
+            var originalContent = File.ReadAllLines(filename);
+
+            // Compare.. something?
+           // Console.WriteLine(originalContent.Length + " vs " + content.Length);
+
+            var createdLines = Regex.Split(content, @"\r?\n|\r");
+
+            var created = createdLines.ToHashSet();
+            var original = originalContent.ToHashSet();
+
+           var union= created.Intersect(original); ;
+
+            Console.WriteLine("==== file: " + Path.GetFileName(filename) + " ====");
+            Console.WriteLine("Original file: " + originalContent.Length + " rows");
+            Console.WriteLine("Generated file: " + createdLines.Length + " rows");
+            Console.WriteLine("Common rows: " + union.Count() + " rows");
+        }
     }
 }

@@ -22,6 +22,12 @@ public class RandomTest
 
         parts = "#PROSA  \\\"muu\\\"\t\t\t123\t hej\"citat  sträng4 sträng5".SplitSieLine();
         Assert.That(parts, Is.EqualTo(new[] { "#PROSA", "\"muu\"", "123", "hej\"citat", "sträng4", "sträng5" }));
+
+        parts = "#FNR \"C:\\ProgramData\\SPCS\\SPCS Administration\\Företag\\Ovnbol2000\"".SplitSieLine();
+        Assert.That(parts, Is.EqualTo(new[] { "#FNR", "C:\\ProgramData\\SPCS\\SPCS Administration\\Företag\\Ovnbol2000" }));
+
+        parts = "#FNR \\\\".SplitSieLine();
+        Assert.That(parts, Is.EqualTo(new[] { "#FNR", "\\" }));
     }
 
     [Test]
@@ -57,6 +63,6 @@ public class RandomTest
     {
         var parts = "#TYPE \"This \\\" is fine\" 6".SplitSieLine();
         Assert.That(parts, Has.Length.EqualTo(3));
-        Assert.That(parts, Is.EqualTo(new[] { "#TYPE", "This \" is fine", "6" }));
+        Assert.That(parts, Is.EqualTo(new[] { "#TYPE", "This \\\" is fine", "6" }));
     }
 }

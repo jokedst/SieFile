@@ -35,7 +35,7 @@ public class SieFileWriter
         OptionalRow(sw, "#ORGNR", sie.OrganisationNumber, sie.OrganisationInternalNumber, sie.OrganisationInternalNumber2);
         OptionalRow(sw, "#BKOD", sie.CompanySNI);
         OptionalRow(sw, "#ADRESS", sie.Contact, sie.AdressLine1, sie.AdressLine2, sie.Phone);
-        sw.WriteLine("#FNAMN " + Escape(sie.CompanyName));
+        Row(sw, "#FNAMN", sie.CompanyName);
         foreach (var year in sie.Years)
             sw.WriteLine("#RAR " + Escape(year.Key) + " " + Escape(year.Value.StartDate) + " " + Escape(year.Value.EndDate));
         OptionalRow(sw, "#TAXAR", sie.TaxationYear);
@@ -75,16 +75,15 @@ public class SieFileWriter
             {
                 case AmountType.IncomingBalance:
                 case AmountType.OutgoingBalance:
+                case AmountType.Result:
                     Row(sw, change.Type.ToRowType(), change.YearIndex, change.Account, change.Amount.ToString("F", CultureInfo.InvariantCulture), change.Quantity?.ToString("F", CultureInfo.InvariantCulture));
                     break;
                 case AmountType.ObjectIncomingBalance:
                 case AmountType.ObjectOutgoingBalance:
                     Row(sw, change.Type.ToRowType(), change.YearIndex, change.Account, FormatDictionary(change.Dimensions), change.Amount.ToString("F", CultureInfo.InvariantCulture), change.Quantity?.ToString("F", CultureInfo.InvariantCulture));
                     break;
-                case AmountType.Result:
-                    sw.WriteLine("#RES " + Escape(change.YearIndex) + " " + Escape(change.Account) + " " + Decimal(change.Amount) + Optional(change.Quantity));
-                    break;
                 case AmountType.PeriodChange:
+                    Row(sw, change.Type.ToRowType(), change.YearIndex, change.Period, change.Account, FormatDictionary(change.Dimensions), change.Amount.ToString("F", CultureInfo.InvariantCulture), change.Quantity?.ToString("F", CultureInfo.InvariantCulture));
                     sw.WriteLine("#PSALDO " + Escape(change.YearIndex) + " " + Escape(change.Period) + " " + Escape(change.Account) + " " + FormatDictionary(change.Dimensions) + " " + Decimal(change.Amount) + Optional(change.Quantity));
                     break;
                 case AmountType.PeriodBudgetChange:
@@ -112,6 +111,9 @@ public class SieFileWriter
         }
     }
 
+    /// <summary>
+    /// Optionally writes a row, only if value is not null. 
+    /// </summary>
     private void OptionalRow(StreamWriter sw, string sieKeyword, string value, params string[] optionalParameters)
     {
         if (value == null) return;
@@ -146,11 +148,11 @@ public class SieFileWriter
         sw.WriteLine();
     }
 
-    private string Escape(string data, bool andPrefix = false)
+    private string Escape(string data)
     {
-        if (string.IsNullOrEmpty(data)) return (andPrefix ? " " : "") + "\"\"";
-        if (data.Contains(' ')) return (andPrefix ? " " : "") + "\"" + data.Replace("\"", "\\\"") + "\"";
-        return (andPrefix ? " " : "") + data;
+        if (string.IsNullOrEmpty(data)) return "\"\"";
+        if (data.Contains(' ')) return "\"" + data.Replace("\"", "\\\"") + "\"";
+        return data;
     }
 
     private string Optional(decimal? data)
@@ -173,16 +175,16 @@ public class SieFileWriter
     {
         if (dict == null) return new Lazy<string>( "{}");
         var sb = new StringBuilder();
-        sb.Append("{");
+        sb.Append('{');
         var first = true;
         foreach (var kvp in dict)
         {
-            if (first) first = false; else sb.Append(" ");
+            if (first) first = false; else sb.Append(' ');
             sb.Append(Escape(kvp.Key));
             sb.Append(' ');
             sb.Append(Escape(kvp.Value));
         }
-        sb.Append("}");
+        sb.Append('}');
         return new Lazy<string>(sb.ToString());
     }
 }
