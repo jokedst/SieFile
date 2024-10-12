@@ -82,4 +82,15 @@ public static class StringExtensions
 
         return result.ToArray();
     }
+
+    public static string ToSieString(this SieFileType fileType)
+        => fileType switch
+        {
+            SieFileType.Type1 => "1",
+            SieFileType.Type2 => "2",
+            SieFileType.Type3 => "3",
+            SieFileType.Type4I => "4",
+            SieFileType.Type4E => "4",
+            _ => throw new ArgumentException("Unknown sie file type '" + fileType + "'", nameof(fileType)),
+        };
 }

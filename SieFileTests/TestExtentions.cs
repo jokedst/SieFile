@@ -16,4 +16,13 @@ public static class TestExtentions
         stream.Position = 0;
         return stream;
     }
+
+    /// <summary>
+    /// Test Helper to get text content from a (possibly closed) MemoryStream
+    /// </summary>
+    public static string GetFileContent(this MemoryStream stream)
+    {
+        stream.TryGetBuffer(out var buffer);
+        return Encoding.GetEncoding(437).GetString(buffer);
+    }
 }

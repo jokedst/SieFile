@@ -8,6 +8,20 @@ using System.Runtime.InteropServices;
 /// </summary>
 public class SieFile
 {
+    internal SieFile() { }
+
+    public SieFile(SieFileType fileType, string program, string programVersion, string companyName, DateOnly currentYearStart, DateOnly? currentYearEnd=null)
+    {
+        Generated = DateOnly.FromDateTime(DateTime.Now);
+        Program = program;
+        ProgramVersion = programVersion;
+        FileType = fileType;
+        CompanyName = companyName;
+        currentYearEnd ??= currentYearStart.AddYears(1).AddDays(-1);
+        Years["0"] = (currentYearStart.ToString("yyyyMMdd"), currentYearEnd.Value.ToString("yyyyMMdd"));
+       // Balances.Max(X=>X.)
+    }
+
     public bool AlreadyImportedFlag { get; set; }
     public SieFileType FileType { get; set; }
     public string Program { get; set; }
@@ -48,6 +62,29 @@ public class SieFile
     public string OrganisationInternalNumber2 { get; set; }
     public string TaxationYear { get; set; }
     public string Currency { get; set; }
+
+    /// <summary>
+    /// If you build a SIE file from scratch, some fields can be calculated and set automatically. 
+    /// </summary>
+    public void ValidateAndFill()
+    {
+        if (BalanceEndDate == null && (  FileType == SieFileType.Type2 || FileType == SieFileType.Type3))
+        {
+            BalanceEndDate = Years["0"].EndDate;
+        }
+
+        //TODO: Ensure all accounts used are in this.Accounts
+        //TODO: Ensure all account types are valid
+        //TODO: Ensure all years referenced in balances are int this.Years
+        //Type 1 and 2 can not have DIM
+
+        if (FileType == SieFileType.Type4I)
+        {
+            // 4E can not have balance or period changes
+            Balances.Clear();
+            PeriodChanges.Clear();
+        }
+    }
 }
 
 public class Dimension
@@ -134,13 +171,14 @@ public enum AmountType
     PeriodBudgetChange
 }
 
+[Flags]
 public enum SieFileType
 {
-    Type1,
-    Type2,
-    Type3,
-    Type4I,
-    Type4E
+    Type1=1,
+    Type2=2,
+    Type3=4,
+    Type4I=8,
+    Type4E=16
 }
 
 /// <summary>

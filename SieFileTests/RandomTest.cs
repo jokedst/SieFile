@@ -55,4 +55,12 @@ public class RandomTest
         parts = "#TY{PE \"{ in quotes \" {param1 \"muu muu\" } hello".SplitSieLine();
         Assert.That(parts, Is.EqualTo(new[] { "#TY{PE", "{ in quotes ", "{param1 \"muu muu\" }", "hello" }));
     }
+
+    [Test]
+    public void CanParseSieLinesWithEscapeCharacters()
+    {
+        var parts = "#TYPE \"This \\\" is fine\" 6".SplitSieLine();
+        Assert.That(parts, Has.Length.EqualTo(3));
+        Assert.That(parts, Is.EqualTo(new[] { "#TYPE", "This \" is fine", "6" }));
+    }
 }

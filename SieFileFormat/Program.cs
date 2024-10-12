@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection.Metadata;
+using System.Text;
 
 var sieReader = new SieFileReader();
 
@@ -19,6 +20,18 @@ Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 var lines = File.ReadAllLines(@"SIE4 Exempelfil.SE", enc);
 
 
+//var writer = new SieFileWriter();
+var stream = new MemoryStream();
+using (StreamWriter sw = new StreamWriter(stream, enc))
+{
+    Row(sw, "#MUU", "one", null, "two", null);
+    Row(sw, "#UNO");
+    Row(sw, "#UNO",null);
+    Row(sw, "#UNO", null,null);
+};
+stream.TryGetBuffer(out var buffer);
+var linex = Encoding.GetEncoding(437).GetString(buffer);
+Console.WriteLine(linex);
 
 foreach (var line in lines)
 {
@@ -42,4 +55,27 @@ void TestFile(string filename)
     Console.WriteLine($"Read file '{Path.GetFileName(filename)}'");
     Console.WriteLine($"File had {sie.Accounts.Count} accounts" );
     Console.WriteLine("File had {0} verifications", sie.Verifications.Count);
+}
+
+
+void Row(StreamWriter sw, string sieKeyword, params string[] optionalParameters)
+{
+    sw.Write(sieKeyword);
+
+    var lastParamWithValue = (optionalParameters?.Length??0) - 1;
+    while (lastParamWithValue >= 0 && optionalParameters[lastParamWithValue] == null) 
+        lastParamWithValue--;
+
+    for(int i = 0; i <= lastParamWithValue; i++)
+    {
+        sw.Write(' ');
+        sw.Write(Escape(optionalParameters[i]));
+    }
+    sw.WriteLine();
+}
+string Escape(string data, bool andPrefix = false)
+{
+    if (string.IsNullOrEmpty(data)) return (andPrefix ? " " : "") + "\"\"";
+    if (data.Contains(' ')) return (andPrefix ? " " : "") + "\"" + data.Replace("\"", "\\\"") + "\"";
+    return (andPrefix ? " " : "") + data;
 }

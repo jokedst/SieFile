@@ -201,7 +201,8 @@ public class SieFileReader
                 case "#RES": // Not entierly sure, but it seems this is the same as "UB" but for accounts of type K or I (expense or revenue)
                     if (AssertParameters(3))
                     {
-                        sie.Balances.Add(new Balance { YearIndex = YearIndex(1), Account = _parts[2], Amount = Decimal(3), Quantity = _parts.Length > 4 ? Decimal(4) : null });
+                        sie.PeriodChanges.Add(new ObjectAmount(YearIndex(1), null, AmountTypeForRow(), _parts[2], null, Decimal(3), OptionalDecimal(4)));
+                        //sie.Balances.Add(new Balance { YearIndex = YearIndex(1), Account = _parts[2], Amount = Decimal(3), Quantity = _parts.Length > 4 ? Decimal(4) : null });
                     }
                     break; 
                 case "#PSALDO": 
@@ -415,6 +416,7 @@ public class SieFileReader
         {
             "#IB" or "#OIB" => AmountType.IncomingBalance,
             "#UB" or "#OUB" => AmountType.OutgoingBalance,
+            "#RES" => AmountType.Result,
             "#PSALDO" => AmountType.PeriodChange,
             "#PBUDGET" => AmountType.PeriodBudgetChange,
             _ => throw new InvalidOperationException($"Post '{_parts[0]}' has no associated amount type. (row {_rowNumber})")
