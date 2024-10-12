@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace SieFileTests;
+﻿namespace SieFileTests;
 
 public class SieFileWriterFacts
 {
@@ -108,24 +106,28 @@ public class SieFileWriterFacts
         sie.Dimensions["2"] = new Dimension { Name = "Sub dimension", ParentDimension = "1" };
         sie.Dimensions["2"].Values["0001"] = "Dim 2 value 0001";
 
-        sie.Balances.Add(new Balance { IncomingBalance = true, YearIndex = "0", Account = "1010", Amount = 12.3m });
-        sie.Balances.Add(new Balance { IncomingBalance = false, YearIndex = "0", Account = "1010", Amount = 5, Quantity=1.2m });
-        sie.Balances.Add(new Balance
-        {
-            IncomingBalance = true,
-            YearIndex = "0",
-            Account = "1010",
-            Amount = 11.1m,
-            Dimensions = new Dictionary<string, string> { ["1"] = "ABC", ["2"]="0001" }
-        });
-        sie.Balances.Add(new Balance
-        {
-            IncomingBalance = false,
-            YearIndex = "0",
-            Account = "1010",
-            Amount = 22.2m,
-            Dimensions = new() { { "1", "ABC" } }
-        });
+        //sie.PeriodChanges.Add(new ObjectAmount { IncomingBalance = true, YearIndex = "0", Account = "1010", Amount = 12.3m });
+        sie.PeriodSummeries.Add(new PeriodSummary("0", null, AmountType.IncomingBalance, "1010", null, 12.3m, null));
+        sie.PeriodSummeries.Add(new PeriodSummary("0", null, AmountType.OutgoingBalance, "1010", null, 5, 1.2m));
+        // sie.Balances.Add(new Balance { IncomingBalance = false, YearIndex = "0", Account = "1010", Amount = 5, Quantity=1.2m });
+        sie.PeriodSummeries.Add(new PeriodSummary("0", null, AmountType.ObjectIncomingBalance, "1010", new() { ["1"] = "ABC", ["2"] = "0001" }, 11.1m, null));
+        //sie.Balances.Add(new Balance
+        //{
+        //    IncomingBalance = true,
+        //    YearIndex = "0",
+        //    Account = "1010",
+        //    Amount = 11.1m,
+        //    Dimensions = new Dictionary<string, string> { ["1"] = "ABC", ["2"]="0001" }
+        //});
+        sie.PeriodSummeries.Add(new PeriodSummary("0", null, AmountType.ObjectOutgoingBalance, "1010", new() { { "1", "ABC" } }, 22.2m, null));
+        //sie.Balances.Add(new Balance
+        //{
+        //    IncomingBalance = false,
+        //    YearIndex = "0",
+        //    Account = "1010",
+        //    Amount = 22.2m,
+        //    Dimensions = new() { { "1", "ABC" } }
+        //});
 
         var stream = new MemoryStream();
         writer.Write(stream, sie);

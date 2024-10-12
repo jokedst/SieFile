@@ -10,7 +10,7 @@ public class SieFile
 {
     internal SieFile() { }
 
-    public SieFile(SieFileType fileType, string program, string programVersion, string companyName, DateOnly currentYearStart, DateOnly? currentYearEnd=null)
+    public SieFile(SieFileType fileType, string program, string programVersion, string companyName, DateOnly currentYearStart, DateOnly? currentYearEnd = null)
     {
         Generated = DateOnly.FromDateTime(DateTime.Now);
         Program = program;
@@ -19,7 +19,6 @@ public class SieFile
         CompanyName = companyName;
         currentYearEnd ??= currentYearStart.AddYears(1).AddDays(-1);
         Years["0"] = (currentYearStart.ToString("yyyyMMdd"), currentYearEnd.Value.ToString("yyyyMMdd"));
-       // Balances.Max(X=>X.)
     }
 
     public bool AlreadyImportedFlag { get; set; }
@@ -37,13 +36,14 @@ public class SieFile
 
     public Dictionary<string, Dimension> Dimensions { get; set; } = [];
     public Dictionary<string, Account> Accounts { get; set; } = [];
-    // For now just a list. Could be a dictionary by year, account and dimensions.
-    public List<Balance> Balances { get; set; } = [];
-    public List<ObjectAmount> PeriodChanges { get; set; } = [];
+    public List<PeriodSummary> PeriodSummeries { get; set; } = [];
     public List<string> Notes { get; set; } = [];
     public Dictionary<string, (string StartDate, string EndDate)> Years { get; set; } = [];
     public List<Verification> Verifications { get; set; } = [];
 
+    /// <summary>
+    /// Financial reporting program's internal code for the company which is exported.
+    /// </summary>
     public string InternalCompanyId { get; set; }
     /// <summary>
     /// Type of company as defined by Bolagsverket. Valid values are AB,E,HB,KB,EK,KHF,BRF,BF,SF,I,S,FL,BAB,MB,SB,BFL,FAB,OFB,SE,SCE,TSF,X
@@ -81,8 +81,8 @@ public class SieFile
         if (FileType == SieFileType.Type4I)
         {
             // 4E can not have balance or period changes
-            Balances.Clear();
-            PeriodChanges.Clear();
+            
+            PeriodSummeries.Clear();
         }
     }
 }
@@ -103,32 +103,11 @@ public class Account
 }
 
 /// <summary>
-/// Represents the balance of an account or object at a given time.
-/// </summary>
-public class Balance
-{
-    /// <summary> Year, as defined by a #RAR row (typically 0 for current year) </summary>
-    public string YearIndex { get; set; }
-    /// <summary>
-    /// If true this represents the start of the period, if false the end.
-    /// These might overlap, e.g. incoming for year 0 and outgoing for year 1 should be the same value (if both exist)
-    /// </summary>
-    public bool IncomingBalance {  get; set; }
-    public string Account {  get; set; }
-    /// <summary>
-    /// (optional) Specifies dimension values for this balance. If null this is an account balance.
-    /// </summary>
-    public Dictionary <string, string> Dimensions { get; set; }
-    public Decimal Amount { get; set; }
-    public Decimal? Quantity { get; set; }
-}
-
-/// <summary>
 /// Represents the balance or result of an account or object at a given time.
 /// </summary>
-public class ObjectAmount
+public class PeriodSummary
 {
-    public ObjectAmount(string yearIndex, string period, AmountType type, string account, Dictionary<string, string> dimensions, decimal amount, decimal? quantity)
+    public PeriodSummary(string yearIndex, string period, AmountType type, string account, Dictionary<string, string> dimensions, decimal amount, decimal? quantity)
     {
         YearIndex = yearIndex;
         Period = period;
@@ -166,6 +145,8 @@ public enum AmountType
     /// </summary>
     IncomingBalance,
     OutgoingBalance,
+    ObjectIncomingBalance,
+    ObjectOutgoingBalance,
     Result,
     PeriodChange,
     PeriodBudgetChange

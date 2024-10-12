@@ -1,8 +1,17 @@
 ﻿using System.Globalization;
 using System.Text;
 
+/// <summary>
+/// Writes a SIE file (type 1-4).
+/// </summary>
 public class SieFileWriter
 {
+    /// <summary>
+    /// Write given SIE file to a stream
+    /// </summary>
+    /// <param name="stream">Where to write. This will be closed when done.</param>
+    /// <param name="sie">SIE file to write.</param>
+    /// <param name="includeHistory">If true, VER row history will be written (RTRANS and BTRANS rows) if available.</param>
     public void Write(Stream stream, SieFile sie, bool includeHistory = false)
     {
         // Ensure codepage 437 is loaded
@@ -18,7 +27,7 @@ public class SieFileWriter
         sw.WriteLine("#FLAGGA " + (sie.AlreadyImportedFlag ? '1' : '0'));
         sw.WriteLine("#PROGRAM " + Escape(sie.Program) + " " + Escape(sie.ProgramVersion));
         sw.WriteLine("#FORMAT PC8");
-        sw.WriteLine("#GEN " + sie.Generated.ToString("yyyyMMdd") + Optional(sie.GeneratedBy));
+        Row(sw, "#GEN", sie.Generated.ToString("yyyyMMdd"), sie.GeneratedBy);
         sw.WriteLine("#SIETYP " + sie.FileType.ToSieString());
         foreach (var prosa in sie.Notes) sw.WriteLine("#PROSA " + Escape(prosa));
         OptionalRow(sw, "#FTYP", sie.CompanyType);
@@ -60,25 +69,17 @@ public class SieFileWriter
             }
         }
 
-        foreach(var balance in sie.Balances)
-        {
-            if (balance.Dimensions == null)
-            {
-                sw.WriteLine("#"+(balance.IncomingBalance?"I":"U")+"B " + Escape(balance.YearIndex) + " " + Escape(balance.Account) + " " + balance.Amount.ToString("F", CultureInfo.InvariantCulture) + Optional(balance.Quantity));
-            }
-            else
-            {
-                sw.WriteLine("#O" + (balance.IncomingBalance ? "I" : "U") + "B " + Escape(balance.YearIndex) + " " + Escape(balance.Account) + " " +FormatDictionary(balance.Dimensions)+ " " + balance.Amount.ToString("F", CultureInfo.InvariantCulture) + Optional(balance.Quantity));
-            }
-        }
-
-        foreach (var change in sie.PeriodChanges)
+        foreach (var change in sie.PeriodSummeries)
         {
             switch (change.Type)
             {
                 case AmountType.IncomingBalance:
-                    break;
                 case AmountType.OutgoingBalance:
+                    Row(sw, change.Type.ToRowType(), change.YearIndex, change.Account, change.Amount.ToString("F", CultureInfo.InvariantCulture), change.Quantity?.ToString("F", CultureInfo.InvariantCulture));
+                    break;
+                case AmountType.ObjectIncomingBalance:
+                case AmountType.ObjectOutgoingBalance:
+                    Row(sw, change.Type.ToRowType(), change.YearIndex, change.Account, FormatDictionary(change.Dimensions), change.Amount.ToString("F", CultureInfo.InvariantCulture), change.Quantity?.ToString("F", CultureInfo.InvariantCulture));
                     break;
                 case AmountType.Result:
                     sw.WriteLine("#RES " + Escape(change.YearIndex) + " " + Escape(change.Account) + " " + Decimal(change.Amount) + Optional(change.Quantity));
@@ -92,7 +93,7 @@ public class SieFileWriter
             }
         }
 
-        foreach(var ver in sie.Verifications)
+        foreach (var ver in sie.Verifications)
         {
             Row(sw, "#VER", ver.Series, ver.VoucherNumber, ver.Date.ToString("yyyyMMdd"), ver.Text, ver.RegistrationDate?.ToString("yyyyMMdd"), ver.User);
             sw.WriteLine("{");
@@ -126,7 +127,7 @@ public class SieFileWriter
         sw.WriteLine();
     }
 
-    private void Row(StreamWriter sw, string sieKeyword, params string[] optionalParameters)
+    private void Row(StreamWriter sw, string sieKeyword, params object[] optionalParameters)
     {
         sw.Write(sieKeyword);
 
@@ -137,7 +138,10 @@ public class SieFileWriter
         for (int i = 0; i <= lastParamWithValue; i++)
         {
             sw.Write(' ');
-            sw.Write(Escape(optionalParameters[i]));
+            if(optionalParameters[i] is string s)
+                sw.Write(Escape(s));
+            else 
+                sw.Write(optionalParameters[i]);
         }
         sw.WriteLine();
     }
@@ -147,15 +151,6 @@ public class SieFileWriter
         if (string.IsNullOrEmpty(data)) return (andPrefix ? " " : "") + "\"\"";
         if (data.Contains(' ')) return (andPrefix ? " " : "") + "\"" + data.Replace("\"", "\\\"") + "\"";
         return (andPrefix ? " " : "") + data;
-    }
-
-    /// <summary>
-    /// Adds a parameter if it has value, including a prefix space
-    /// </summary>
-    private string Optional(string data, bool andPrefix = true)
-    {
-        if (data == null) return "";
-        return (andPrefix ? " " : "") + Escape(data);
     }
 
     private string Optional(decimal? data)
@@ -169,9 +164,14 @@ public class SieFileWriter
         return data.ToString("F", CultureInfo.InvariantCulture);
     }
 
-    private string FormatDictionary(Dictionary<string, string> dict)
+    /// <summary>
+    /// Converts a dictionary into a SIE string, e.g. "{A NameA B NameB}"
+    /// </summary>
+    /// <param name="dict"></param>
+    /// <returns>Returns a Lazy string, just so the other code doesn't escape it.</returns>
+    private Lazy<string> FormatDictionary(Dictionary<string, string> dict)
     {
-        if (dict == null) return "{}";
+        if (dict == null) return new Lazy<string>( "{}");
         var sb = new StringBuilder();
         sb.Append("{");
         var first = true;
@@ -183,6 +183,6 @@ public class SieFileWriter
             sb.Append(Escape(kvp.Value));
         }
         sb.Append("}");
-        return sb.ToString();
+        return new Lazy<string>(sb.ToString());
     }
 }

@@ -159,57 +159,30 @@ public class SieFileReader
                     }
                     break;
                 case "#IB": 
-                    if (AssertParameters(3))
-                    {
-                        decimal? quantityIB = null;
-                        Assert(decimal.TryParse(_parts[3], CultureInfo.InvariantCulture, out var balance), "Could not parse #IB balance");
-                        if (_parts.Length > 4 && Assert(decimal.TryParse(_parts[4], CultureInfo.InvariantCulture, out var quantity), "Could not parse #IB quantity"))
-                            quantityIB = quantity;
-                        sie.Balances.Add(new Balance { YearIndex = _parts[1], Account = _parts[2], Amount = balance, Quantity = quantityIB, IncomingBalance = true });
-                    }
-                    break;
                 case "#UB":
                     if (AssertParameters(3))
                     {
-                        decimal? quantityUB = null;
-                        Assert(decimal.TryParse(_parts[3], CultureInfo.InvariantCulture, out var balance), "Could not parse #UB balance");
-                        if (_parts.Length > 4 && Assert(decimal.TryParse(_parts[4], CultureInfo.InvariantCulture, out var quantity), "Could not parse #UB quantity"))
-                            quantityUB = quantity;
-                        sie.Balances.Add(new Balance { YearIndex = _parts[1], Account = _parts[2], Amount = balance, Quantity = quantityUB, IncomingBalance = false });
+                        sie.PeriodSummeries.Add(new PeriodSummary(YearIndex(1), null, AmountTypeForRow(), _parts[2], null, Decimal(3), OptionalDecimal(4)));
                     }
                     break;
                 case "#OIB":
                 case "#OUB":
                     if (AssertParameters(4))
                     {
-                        decimal? quantityUB = null;
-                        Assert(decimal.TryParse(_parts[4], CultureInfo.InvariantCulture, out var balance), $"Could not parse {rowType} balance");
-                        if (_parts.Length > 5 && Assert(decimal.TryParse(_parts[5], CultureInfo.InvariantCulture, out var quantity), $"Could not parse {rowType} quantity"))
-                            quantityUB = quantity;
-                        
-                        if(!Assert(_parts[3].StartsWith('{') && _parts[3].EndsWith('}'), $"{rowType} dimensions invalid")) break;
-                        var dimString = _parts[3].Substring(1, _parts[3].Length - 2);
-                        var dimParts = dimString.SplitSieLine();
-                        Assert(dimParts.Length % 2 == 0, $"{rowType} dimensions invalid");
-                        var dimensions = new Dictionary<string, string>();
-                        for (var i = 0; i < dimParts.Length / 2; i++)
-                            dimensions[dimParts[i * 2]] = dimParts[i * 2 + 1];
-
-                        sie.Balances.Add(new Balance { YearIndex = _parts[1], Account = _parts[2], Amount = balance, Quantity = quantityUB, Dimensions = dimensions, IncomingBalance = rowType == "#OIB" });
+                        sie.PeriodSummeries.Add(new PeriodSummary(YearIndex(1), null, AmountTypeForRow(), _parts[2], ParseDictionary(3), Decimal(4), OptionalDecimal(5)));
                     }
                     break;
                 case "#RES": // Not entierly sure, but it seems this is the same as "UB" but for accounts of type K or I (expense or revenue)
                     if (AssertParameters(3))
                     {
-                        sie.PeriodChanges.Add(new ObjectAmount(YearIndex(1), null, AmountTypeForRow(), _parts[2], null, Decimal(3), OptionalDecimal(4)));
-                        //sie.Balances.Add(new Balance { YearIndex = YearIndex(1), Account = _parts[2], Amount = Decimal(3), Quantity = _parts.Length > 4 ? Decimal(4) : null });
+                        sie.PeriodSummeries.Add(new PeriodSummary(YearIndex(1), null, AmountTypeForRow(), _parts[2], null, Decimal(3), OptionalDecimal(4)));
                     }
                     break; 
                 case "#PSALDO": 
                 case "#PBUDGET":
                     if (AssertParameters(5))
                     {
-                        sie.PeriodChanges.Add(new ObjectAmount(YearIndex(1), Period(2), AmountTypeForRow(), _parts[3], ParseDictionary(4), Decimal(5), OptionalDecimal(6)));
+                        sie.PeriodSummeries.Add(new PeriodSummary(YearIndex(1), Period(2), AmountTypeForRow(), _parts[3], ParseDictionary(4), Decimal(5), OptionalDecimal(6)));
                     }
                     break;
                 case "#VER":
@@ -350,11 +323,6 @@ public class SieFileReader
     private string Period(int index)
     {
         if (Required(index) == null) return null;
-        //if (_parts?.Length <= index)
-        //{
-        //    _errors.Add($"Post '{_parts[0]}' is missing parameter {index}. (row {_rowNumber})");
-        //    return null;
-        //}
         if (_parts[index].Length != 6 || !DateOnly.TryParseExact(_parts[index], "yyyyMM", out _))
             _errors.Add($"Post '{_parts[0]}' parameter {index} ('{_parts[index]}') is not a valid period. (row {_rowNumber})");
         return _parts[index];
@@ -414,8 +382,10 @@ public class SieFileReader
     {
         return _parts[0] switch
         {
-            "#IB" or "#OIB" => AmountType.IncomingBalance,
-            "#UB" or "#OUB" => AmountType.OutgoingBalance,
+            "#IB"  => AmountType.IncomingBalance,
+            "#UB"  => AmountType.OutgoingBalance,
+            "#OIB" => AmountType.ObjectIncomingBalance,
+            "#OUB" => AmountType.ObjectOutgoingBalance,
             "#RES" => AmountType.Result,
             "#PSALDO" => AmountType.PeriodChange,
             "#PBUDGET" => AmountType.PeriodBudgetChange,

@@ -12,8 +12,7 @@ public static class StringExtensions
     /// <param name="preserveEscapeCharInQuotes">If set to <c>true</c>, then the escape character (\) used to escape e.g. quotes is included in the results.</param>
     public static string[] SplitSieLine(this string source, char[] separators = null, bool trimSplits = false, bool ignoreEmptyResults = true, bool preserveEscapeCharInQuotes = false)
     {
-        // new[] { ' ', '\t' }, false, true, false
-        if (source == null) return Array.Empty<string>();
+        if (source == null) return [];
         separators ??= [' ', '\t'];
 
         var result = new List<string>();
@@ -52,8 +51,8 @@ public static class StringExtensions
                     escapeFlag = true;
                     break;
                 case '"':
-                    if(bracketsOpen)
-                      currentItem.Append(currentChar);
+                    if (bracketsOpen)
+                        currentItem.Append(currentChar);
                     // Only allow quotes in the beginning of strings
                     else if (!quotesOpen && currentItem.Length == 0)
                         quotesOpen = hadQuotes = true;
@@ -92,5 +91,18 @@ public static class StringExtensions
             SieFileType.Type4I => "4",
             SieFileType.Type4E => "4",
             _ => throw new ArgumentException("Unknown sie file type '" + fileType + "'", nameof(fileType)),
+        };
+
+    public static string ToRowType(this AmountType amountType)
+        => amountType switch
+        {
+            AmountType.IncomingBalance => "#IB",
+            AmountType.OutgoingBalance => "#UB",
+            AmountType.ObjectIncomingBalance => "#OIB",
+            AmountType.ObjectOutgoingBalance => "#OUB",
+            AmountType.Result => "#RES",
+            AmountType.PeriodChange => "#PSALDO",
+            AmountType.PeriodBudgetChange => "#PBUDGET",
+            _ => throw new InvalidOperationException($"AmountType '{amountType}' has no associated row type.")
         };
 }

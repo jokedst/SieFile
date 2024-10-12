@@ -109,8 +109,13 @@ public class SieFileReaderFacts
             Assert.That(reader.Errors, Is.Empty);
             Assert.That(reader.Warnings, Is.Empty);
             Assert.That(sie.AlreadyImportedFlag, Is.EqualTo(false));
-            Assert.That(sie.Balances.Any(x => x.IncomingBalance && x.Dimensions?.ContainsKey("7") == true && x.Dimensions["7"] == "KalleB" && x.Quantity==6 && x.Amount == 1000.01m));
-            Assert.That(sie.Balances.Any(x => !x.IncomingBalance && x.Dimensions?.ContainsKey("7") == true && x.Dimensions["7"] == "KalleB" && x.Quantity == 1.3m && x.Amount == 999));
+            Assert.That(sie.PeriodSummeries.Any(x => x.Type== AmountType.ObjectIncomingBalance && x.Dimensions?.ContainsKey("7") == true && x.Dimensions["7"] == "KalleB" && x.Quantity==6 && x.Amount == 1000.01m));
+            Assert.That(sie.PeriodSummeries.Any(x => x.Type == AmountType.ObjectOutgoingBalance && x.Dimensions?.ContainsKey("7") == true && x.Dimensions["7"] == "KalleB" && x.Quantity == 1.3m && x.Amount == 999));
+
+
+            Assert.That(sie.PeriodSummeries.Any(x => x.Type == AmountType.IncomingBalance && x.Account == "1221" && x.Amount == 421457.53m && x.Quantity == null));
+            Assert.That(sie.PeriodSummeries.Any(x => x.Type == AmountType.OutgoingBalance && x.Account == "1221" && x.Amount == 518057.53m && x.Quantity == 123.2m));
+            Assert.That(sie.PeriodSummeries.Any(x => x.Type == AmountType.Result && x.Account == "3041" && x.Amount == -1690380.20m && x.YearIndex == "0"));
         });
     }
 

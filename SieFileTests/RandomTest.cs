@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SieFileTests;
+﻿namespace SieFileTests;
 
 [TestFixture]
 public class RandomTest
@@ -12,8 +10,6 @@ public class RandomTest
         Assert.That(generated, Is.EqualTo(new DateOnly(2023,4,6)));
         Assert.That(DateOnly.TryParseExact("202304", "yyyyMM", out _), Is.EqualTo(true));
         Assert.That(DateOnly.TryParseExact("202314", "yyyyMM", out _), Is.EqualTo(false));
-
-
         Assert.That(DateOnly.TryParseExact("2023", "yyyy", out _), Is.EqualTo(true));
     }
 
