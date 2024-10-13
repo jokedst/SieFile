@@ -107,6 +107,10 @@ public class SieFileWriterFacts
         sie.PeriodSummeries.Add(new PeriodSummary("0", null, AmountType.ObjectIncomingBalance, "1010", new() { ["1"] = "ABC", ["2"] = "0001" }, 11.1m, null));
 
         sie.PeriodSummeries.Add(new PeriodSummary("0", null, AmountType.ObjectOutgoingBalance, "1010", new() { { "1", "ABC" } }, 22.2m, null));
+        sie.PeriodSummeries.Add(new PeriodSummary("0", null, AmountType.Result, "3997", null, -27504.0m, 77));
+        sie.PeriodSummeries.Add(new PeriodSummary("0", null, AmountType.Result, "4010", null, 670102.21m, null));
+        sie.PeriodSummeries.Add(new PeriodSummary("0", "200808", AmountType.PeriodChange, "1910", null, 1243.50m, 123));
+        sie.PeriodSummeries.Add(new PeriodSummary("0", "199708", AmountType.PeriodBudgetChange, "4010", new() { { "1", "11" } }, 150000, null));
 
         var stream = new MemoryStream();
         writer.Write(stream, sie);
@@ -139,10 +143,14 @@ public class SieFileWriterFacts
             #DIM 1 "First dimension"
             #UNDERDIM 2 "Sub dimension" 1
             #OBJEKT 2 0001 "Dim 2 value 0001"
-            #IB 0 1010 12.30
-            #UB 0 1010 5.00 1.20
-            #OIB 0 1010 {1 ABC 2 0001} 11.10
-            #OUB 0 1010 {1 ABC} 22.20
+            #IB 0 1010 12.3
+            #UB 0 1010 5 1.2
+            #OIB 0 1010 {1 ABC 2 0001} 11.1
+            #OUB 0 1010 {1 ABC} 22.2
+            #RES 0 3997 -27504 77
+            #RES 0 4010 670102.21
+            #PSALDO 0 200808 1910 {} 1243.5 123
+            #PBUDGET 0 199708 4010 {1 11} 150000
 
             """));
     }
@@ -176,8 +184,8 @@ public class SieFileWriterFacts
             #RAR 0 20200101 20201231
             #VER A 1 20231020 "ver text" 20231030 Joe
             {
-               #TRANS 1000 {} 12.00
-               #TRANS 2000 {} -12.00
+               #TRANS 1000 {} 12
+               #TRANS 2000 {} -12
             }
 
             """));

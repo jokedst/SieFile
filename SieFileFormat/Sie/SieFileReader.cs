@@ -22,6 +22,15 @@ public class SieFileReader
     /// <summary>
     /// Reads a SIE file of type 1-4
     /// </summary>
+    /// <param name="filename">File to read from. Must be in encoding PC8, aka codepage 427.</param>
+    public SieFile Read(string filename)
+    {
+        return Read(File.OpenRead(filename), filename);
+    }
+
+    /// <summary>
+    /// Reads a SIE file of type 1-4
+    /// </summary>
     /// <param name="stream">Stream to read from. Must be in encoding PC8, aka codepage 427.</param>
     /// <param name="filename">
     /// The only difference between a type 4 import (4I) and export (4E) file seems to be the file extension, so this is needed to know what file type it is.
@@ -240,7 +249,7 @@ public class SieFileReader
                     Assert(line?.Trim() == "}", "Post #VER was not closed with a '}'");
                     Assert(entry.Rows.Sum(r => r.Amount) == 0, "Post #VER sum of rows is not zero");
                     break;
-                case "#KSUMMA": // This is for calculating and verifying a CRC32 checksum. Not seen in the wild. Might implement later.
+                case "#KSUMMA": // Calculate and verifying a CRC32 checksum. Works on all test files but one...
                     if (crc == null)
                     {
                         crc = new Crc32();
@@ -248,7 +257,7 @@ public class SieFileReader
                     else if (AssertParameters(1))
                     {
                         Assert(uint.TryParse(_parts[1], out uint checksum), "Could not parse KSUMMA parameter");
-                        // The checksum is wrong in all test files, so I'm prob doing somethign wrong. Just warn for now.
+                        // The checksum is wrong in one test file... Just warn for now.
                         WarnIf(crc.Checksum != checksum, "KSUMMA checksum does not match");
                     }
                     break;

@@ -76,18 +76,15 @@ public class SieFileWriter
                 case AmountType.IncomingBalance:
                 case AmountType.OutgoingBalance:
                 case AmountType.Result:
-                    Row(sw, change.Type.ToRowType(), change.YearIndex, change.Account, change.Amount.ToString("F", CultureInfo.InvariantCulture), change.Quantity?.ToString("F", CultureInfo.InvariantCulture));
+                    Row(sw, change.Type.ToRowType(), change.YearIndex, change.Account, SieDecimal(change.Amount), Optional(change.Quantity));
                     break;
                 case AmountType.ObjectIncomingBalance:
                 case AmountType.ObjectOutgoingBalance:
-                    Row(sw, change.Type.ToRowType(), change.YearIndex, change.Account, FormatDictionary(change.Dimensions), change.Amount.ToString("F", CultureInfo.InvariantCulture), change.Quantity?.ToString("F", CultureInfo.InvariantCulture));
+                    Row(sw, change.Type.ToRowType(), change.YearIndex, change.Account, FormatDictionary(change.Dimensions), SieDecimal(change.Amount), Optional(change.Quantity));
                     break;
                 case AmountType.PeriodChange:
-                    Row(sw, change.Type.ToRowType(), change.YearIndex, change.Period, change.Account, FormatDictionary(change.Dimensions), change.Amount.ToString("F", CultureInfo.InvariantCulture), change.Quantity?.ToString("F", CultureInfo.InvariantCulture));
-                    sw.WriteLine("#PSALDO " + Escape(change.YearIndex) + " " + Escape(change.Period) + " " + Escape(change.Account) + " " + FormatDictionary(change.Dimensions) + " " + Decimal(change.Amount) + Optional(change.Quantity));
-                    break;
                 case AmountType.PeriodBudgetChange:
-                    sw.WriteLine("#PBUDGET " + Escape(change.YearIndex) + " " + Escape(change.Period) + " " + Escape(change.Account) + " " + FormatDictionary(change.Dimensions) + " " + Decimal(change.Amount) + Optional(change.Quantity));
+                    Row(sw, change.Type.ToRowType(), change.YearIndex, change.Period, change.Account, FormatDictionary(change.Dimensions), SieDecimal(change.Amount), Optional(change.Quantity));
                     break;
             }
         }
@@ -101,11 +98,11 @@ public class SieFileWriter
                 if (includeHistory)
                 {
                     var btrans = ver.RemovedRows.Find(r => r.RowNumber == verLine.RowNumber);
-                    if (btrans != null) Row(sw, "   #BTRANS", btrans.Account, FormatDictionary(btrans.Dimensions), Decimal(btrans.Amount), btrans.TransactionDate?.ToString("yyyyMMdd"), btrans.Text, btrans.Quantity?.ToString("F", CultureInfo.InvariantCulture), btrans.User);
+                    if (btrans != null) Row(sw, "   #BTRANS", btrans.Account, FormatDictionary(btrans.Dimensions), SieDecimal(btrans.Amount), btrans.TransactionDate?.ToString("yyyyMMdd"), btrans.Text, Optional(btrans.Quantity), btrans.User);
                     var rtrans = ver.AddedRows.Find(r => r.RowNumber == verLine.RowNumber);
-                    if (rtrans != null) Row(sw, "   #RTRANS", rtrans.Account, FormatDictionary(rtrans.Dimensions), Decimal(rtrans.Amount), rtrans.TransactionDate?.ToString("yyyyMMdd"), rtrans.Text, rtrans.Quantity?.ToString("F", CultureInfo.InvariantCulture), rtrans.User);
+                    if (rtrans != null) Row(sw, "   #RTRANS", rtrans.Account, FormatDictionary(rtrans.Dimensions), SieDecimal(rtrans.Amount), rtrans.TransactionDate?.ToString("yyyyMMdd"), rtrans.Text, Optional(rtrans.Quantity), rtrans.User);
                 }
-                Row(sw, "   #TRANS", verLine.Account, FormatDictionary(verLine.Dimensions), Decimal(verLine.Amount), verLine.TransactionDate?.ToString("yyyyMMdd"), verLine.Text, verLine.Quantity?.ToString("F", CultureInfo.InvariantCulture), verLine.User);
+                Row(sw, "   #TRANS", verLine.Account, FormatDictionary(verLine.Dimensions), SieDecimal(verLine.Amount), verLine.TransactionDate?.ToString("yyyyMMdd"), verLine.Text, Optional(verLine.Quantity), verLine.User);
             }
             sw.WriteLine("}");
         }
@@ -157,13 +154,13 @@ public class SieFileWriter
 
     private string Optional(decimal? data)
     {
-        if (data == null) return "";
-        return " " + data.Value.ToString("F", CultureInfo.InvariantCulture);
+        if (data == null) return null;
+        return SieDecimal(data.Value);
     }
 
-    private string Decimal(decimal data)
+    private string SieDecimal(decimal data)
     {
-        return data.ToString("F", CultureInfo.InvariantCulture);
+        return data.ToString("0.##", CultureInfo.InvariantCulture);
     }
 
     /// <summary>

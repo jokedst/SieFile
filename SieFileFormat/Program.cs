@@ -4,6 +4,8 @@ var sieReader = new SieFileReader();
 
 Console.WriteLine("Testing SIE files");
 
+var sie  = sieReader.Read(@"C:\Users\joawen\Source\Repos\SieFile\SieFileTests\sie_test_files\Norstedts Revision SIE 1.se");
+
 TestFile(@"C:\Users\joawen\Source\Repos\SieFile\SieFileTests\sie_test_files\Norstedts Bokslut SIE 1.se");
 
 

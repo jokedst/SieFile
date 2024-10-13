@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SieFileTests;
@@ -39,7 +40,7 @@ public class SieFileReaderFacts
     public void ErrorOnUnclosedVER()
     {
         var sie = reader.Read(@"#FLAGGA 0 
-#VER A 1 20210105 Kaffebröd 20210310
+#VER A 1 20210105 KaffebrÃ¶d 20210310
 {
    #TRANS 1910 {} -195.00
    #TRANS 2641 {} 20.88".To437Stream(), "muu.si");
@@ -58,9 +59,9 @@ public class SieFileReaderFacts
         var sieData = @"#FLAGGA 0 
 #FORMAT PC8
 #SIETYP 3
-#PROGRAM ""Super bokföring \""2000\"" med coola grejjer"" 3.14
+#PROGRAM ""Super bokfÃ¶ring \""2000\"" med coola grejjer"" 3.14
 #GEN 20230822 
-#FNAMN ""Övningsbolaget AB""
+#FNAMN ""Ã–vningsbolaget AB""
 #FNR ""exort873123-3123-12""
 #ORGNR 555555-5555
 #ADRESS ""Gun Hellsweek"" ""Box 1"" ""123 45 STORSTAD"" ""012-34 56 78""
@@ -75,10 +76,10 @@ public class SieFileReaderFacts
 #KONTO 2081 Aktiekapital
 #KTYP 2081 S
 #SRU 2081 7301
-#KONTO 3041 ""Försäljn tjänst 25% sv""
+#KONTO 3041 ""FÃ¶rsÃ¤ljn tjÃ¤nst 25% sv""
 #KTYP 3041 I
 #SRU 3041 7410
-#KONTO 4010 ""Inköp material och varor""
+#KONTO 4010 ""InkÃ¶p material och varor""
 #KTYP 4010 K
 #SRU 4010 7512
 #DIM 1 Resultatenhet
@@ -127,10 +128,10 @@ public class SieFileReaderFacts
         var sieData = @"#FLAGGA 0 
 #FORMAT PC8
 #SIETYP 4
-#PROSA  \""muu\""			123	 hej""citat  sträng4 sträng5
-#PROGRAM ""Super bokföring \""2000\"" med coola grejjer""   3.14
+#PROSA  \""muu\""			123	 hej""citat  strÃ¤ng4 strÃ¤ng5
+#PROGRAM ""Super bokfÃ¶ring \""2000\"" med coola grejjer""   3.14
 #GEN 20230822 
-#FNAMN ""Övningsbolaget AB""
+#FNAMN ""Ã–vningsbolaget AB""
 #FNR ""exort873123-3123-12""
 #ORGNR 555555-5555
 #ADRESS ""Gun Hellsweek"" ""Box 1"" ""123 45 STORSTAD"" ""012-34 56 78""
@@ -145,10 +146,10 @@ public class SieFileReaderFacts
 #KONTO 2081 Aktiekapital
 #KTYP 2081 S
 #SRU 2081 7301
-#KONTO 3041 ""Försäljn tjänst 25% sv""
+#KONTO 3041 ""FÃ¶rsÃ¤ljn tjÃ¤nst 25% sv""
 #KTYP 3041 I
 #SRU 3041 7410
-#KONTO 4010 ""Inköp material och varor""
+#KONTO 4010 ""InkÃ¶p material och varor""
 #KTYP 4010 K
 #SRU 4010 7512
 #DIM 1 Resultatenhet
@@ -169,7 +170,7 @@ public class SieFileReaderFacts
 
 #OIB 0 1221 {1 ""Nord""} 23780.78
 
-#VER A 1 20210105 Kaffebröd 20210310
+#VER A 1 20210105 KaffebrÃ¶d 20210310
 {
    #TRANS 1221 {} -195.00
    #TRANS 2641 {} 20.88
@@ -216,10 +217,10 @@ public class SieFileReaderFacts
             Assert.That(errors, Is.EqualTo(13));
             Assert.That(allErrors, Does.Contain("BL0001_typ4I.SI: Post '#RAR' is missing parameter 2 (row 7)"));
             Assert.That(allErrors, Does.Contain("BL0001_typ4I.SI: Post '#RAR' is missing parameter 3 (row 7)"));
-            Assert.That(allErrors, Does.Contain("SIE-fil från Visma Enskild Firma 2010.se: Post '#SRU' does not have 2 parameters (row 76)"));
-            Assert.That(allErrors, Does.Contain("SIE-fil från Visma Enskild Firma 2010.se: Post '#SRU' does not have 2 parameters (row 79)"));
-            Assert.That(allErrors, Does.Contain("SIE-fil från Visma Enskild Firma 2010.se: Post '#SRU' does not have 2 parameters (row 82)"));
-            Assert.That(allErrors, Does.Contain("SIE-fil från Visma Enskild Firma 2010.se: Post '#SRU' does not have 2 parameters (row 85)"));
+            Assert.That(allErrors, Does.Contain("SIE-fil frÃ¥n Visma Enskild Firma 2010.se: Post '#SRU' does not have 2 parameters (row 76)"));
+            Assert.That(allErrors, Does.Contain("SIE-fil frÃ¥n Visma Enskild Firma 2010.se: Post '#SRU' does not have 2 parameters (row 79)"));
+            Assert.That(allErrors, Does.Contain("SIE-fil frÃ¥n Visma Enskild Firma 2010.se: Post '#SRU' does not have 2 parameters (row 82)"));
+            Assert.That(allErrors, Does.Contain("SIE-fil frÃ¥n Visma Enskild Firma 2010.se: Post '#SRU' does not have 2 parameters (row 85)"));
             Assert.That(allErrors, Does.Contain("Sie4.se: Post '#KTYP' does not have 2 parameters (row 593)"));
             Assert.That(allErrors, Does.Contain("Sie4.si: Post '#ORGNR' is missing parameter 1 (row 9)"));
             Assert.That(allErrors, Does.Contain("SIE_exempelfil.se: Post '#ORGNR' is missing parameter 1 (row 8)"));
@@ -229,7 +230,6 @@ public class SieFileReaderFacts
             Assert.That(allErrors, Does.Contain("XE_SIE_4_20151125095119.SE: Post #VER sum of rows is not zero (row 1360)"));
         });
     }
-
 
     [Test]
     public void CanReadThenWriteTestFiles()
@@ -245,7 +245,6 @@ public class SieFileReaderFacts
             using (var fs = File.OpenWrite(Path.Combine("testfiles_output", Path.GetFileName(filename))))
             {
                 writer.Write(fs, sie);
-
             }
 
             var wstream = new MemoryStream();
@@ -253,7 +252,7 @@ public class SieFileReaderFacts
 
             var content = wstream.GetFileContent();
 
-            var originalContent = File.ReadAllLines(filename);
+            var originalContent = File.ReadAllLines(filename, Encoding.GetEncoding(437));
 
             // Compare.. something?
            // Console.WriteLine(originalContent.Length + " vs " + content.Length);
@@ -263,12 +262,48 @@ public class SieFileReaderFacts
             var created = createdLines.ToHashSet();
             var original = originalContent.ToHashSet();
 
-           var union= created.Intersect(original); ;
+            var union= created.Intersect(original); 
 
             Console.WriteLine("==== file: " + Path.GetFileName(filename) + " ====");
             Console.WriteLine("Original file: " + originalContent.Length + " rows");
             Console.WriteLine("Generated file: " + createdLines.Length + " rows");
             Console.WriteLine("Common rows: " + union.Count() + " rows");
+
+            // Normalize the original lines and try again
+            var normalizedRows = originalContent.Select(Normalize).ToList();
+            var normalized = new HashSet<string>(normalizedRows);
+            union= created.Intersect(normalized); 
+            Console.WriteLine("Common rows (normalized): " + union.Count() + " rows");
+            File.WriteAllLines(Path.Combine("testfiles_output", Path.GetFileName(filename)+"x.txt"), normalizedRows);
         }
+    }
+
+    [Test]
+    public void TestTest()
+    {
+        var n=Normalize("#RES	0	7220	    461999.89");
+        Assert.That(Normalize("#RES	0	7220	    461999.89"), Is.EqualTo("#RES 0 7220 461999.89"));
+        
+         n=Normalize("#RES {\"a\"   123 } 12");
+        Assert.That(Normalize("#RES {\"a\"   123 } 12"), Is.EqualTo("#RES {a 123} 12"));
+    }
+
+    private string Normalize(string data)
+    {
+        // var parts = data.SplitSieLine();
+        // var escaped = parts.Select(Escape).ToArray();
+        // var joined = string.Join(' ', escaped);
+        // return joined;
+
+        return string.Join(' ', data.SplitSieLine().Select(Escape));
+
+    }
+
+    private string Escape(string data)
+    {
+        if (string.IsNullOrEmpty(data)) return "\"\"";
+        if(data.StartsWith('{') && data.EndsWith('}')) return '{' + Normalize(data[1..^1]) + '}';
+        if (data.Contains(' ')) return "\"" + data.Replace("\"", "\\\"") + "\"";
+        return data;
     }
 }
