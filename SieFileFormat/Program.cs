@@ -1,6 +1,10 @@
 ﻿using System.Globalization;
 using System.Text;
 using System.Text.Json;
+using SieFileFormat.Sie;
+using System.Data.SqlClient;
+
+namespace SieFileFormat;
 
 internal class Program
 {
@@ -51,6 +55,9 @@ internal class Program
             var parts = line.Split(' ', '\t');
             var rowType = parts[0];
         }
+
+        //using(var con = new SqlConnection)
+        
 
         void VerToSql(SieFile sie, string nodeId = "1E614737-72E3-4AD8-B077-12D7CE70E52C", string path = "1.7.3.2")
         {

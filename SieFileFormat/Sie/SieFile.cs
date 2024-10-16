@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿namespace SieFileFormat.Sie;
+
+/// <summary>
 /// Represents a SIE file (v 1-4). 
 /// </summary>
 public class SieFile
@@ -27,6 +29,9 @@ public class SieFile
     public string AdressLine1 { get; set; }
     public string AdressLine2 { get; set; }
     public string Phone { get; set; }
+    /// <summary>
+    /// Swedish industry code (SNI) for the exported company.
+    /// </summary>
     public string CompanySNI { get; set; }
     public string CompanyName { get; set; }
     public DateOnly Generated { get; set; }
@@ -132,8 +137,8 @@ public class PeriodSummary
     /// (optional) Specifies dimension values for this amount. If null this is an account amount.
     /// </summary>
     public Dictionary<string, string> Dimensions { get; set; }
-    public Decimal Amount { get; set; }
-    public Decimal? Quantity { get; set; }
+    public decimal Amount { get; set; }
+    public decimal? Quantity { get; set; }
 }
 
 public enum AmountType

@@ -1,6 +1,8 @@
 ﻿using System.Text;
 
-public static class StringExtensions
+namespace SieFileFormat.Sie;
+
+public static class SieExtensions
 {
     /// <summary>
     /// Splits the string by space/tab, but only when the separator is outside quotes or brackets.

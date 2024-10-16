@@ -1,4 +1,5 @@
 ﻿namespace SieFileTests;
+using SieFileFormat.Sie;
 
 [TestFixture]
 public class RandomTest

@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
 using System.Text;
 
+namespace SieFileFormat.Sie;
+
 /// <summary>
 /// Writes a SIE file (type 1-4).
 /// </summary>
@@ -39,16 +41,16 @@ public class SieFileWriter
         foreach (var year in sie.Years)
             sw.WriteLine("#RAR " + Escape(year.Key) + " " + Escape(year.Value.StartDate) + " " + Escape(year.Value.EndDate));
         OptionalRow(sw, "#TAXAR", sie.TaxationYear);
-        
-        if(sie.FileType == SieFileType.Type2|| sie.FileType == SieFileType.Type3|| sie.FileType == SieFileType.Type4E)
+
+        if (sie.FileType == SieFileType.Type2 || sie.FileType == SieFileType.Type3 || sie.FileType == SieFileType.Type4E)
             OptionalRow(sw, "#OMFATTN", sie.BalanceEndDate);
         OptionalRow(sw, "#KPTYP", sie.BaseAccountPlan);
         OptionalRow(sw, "#VALUTA", sie.Currency);
 
-        foreach(var account in sie.Accounts)
+        foreach (var account in sie.Accounts)
         {
             sw.WriteLine("#KONTO " + Escape(account.Key) + " " + Escape(account.Value.Name));
-            if(account.Value.Type != default)
+            if (account.Value.Type != default)
                 sw.WriteLine("#KTYP " + Escape(account.Key) + " " + account.Value.Type);
             if (account.Value.SRU != null)
                 sw.WriteLine("#SRU " + Escape(account.Key) + " " + Escape(account.Value.SRU));
@@ -62,8 +64,8 @@ public class SieFileWriter
                 sw.WriteLine("#UNDERDIM " + Escape(dimension.Key) + " " + Escape(dimension.Value.Name) + " " + Escape(dimension.Value.ParentDimension));
             else
                 sw.WriteLine("#DIM " + Escape(dimension.Key) + " " + Escape(dimension.Value.Name));
-            
-            foreach(var dimValue in dimension.Value.Values)
+
+            foreach (var dimValue in dimension.Value.Values)
             {
                 sw.WriteLine("#OBJEKT " + Escape(dimension.Key) + " " + Escape(dimValue.Key) + " " + Escape(dimValue.Value));
             }
@@ -93,7 +95,7 @@ public class SieFileWriter
         {
             Row(sw, "#VER", ver.Series, ver.VoucherNumber, ver.Date.ToString("yyyyMMdd"), ver.Text, ver.RegistrationDate?.ToString("yyyyMMdd"), ver.User);
             sw.WriteLine("{");
-            foreach(var verLine in ver.Rows)
+            foreach (var verLine in ver.Rows)
             {
                 if (includeHistory)
                 {
@@ -137,9 +139,9 @@ public class SieFileWriter
         for (int i = 0; i <= lastParamWithValue; i++)
         {
             sw.Write(' ');
-            if(optionalParameters[i] is string s)
+            if (optionalParameters[i] is string s)
                 sw.Write(Escape(s));
-            else 
+            else
                 sw.Write(optionalParameters[i]);
         }
         sw.WriteLine();
@@ -170,7 +172,7 @@ public class SieFileWriter
     /// <returns>Returns a Lazy string, just so the other code doesn't escape it.</returns>
     private Lazy<string> FormatDictionary(Dictionary<string, string> dict)
     {
-        if (dict == null) return new Lazy<string>( "{}");
+        if (dict == null) return new Lazy<string>("{}");
         var sb = new StringBuilder();
         sb.Append('{');
         var first = true;

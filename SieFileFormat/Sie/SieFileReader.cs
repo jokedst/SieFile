@@ -1,5 +1,10 @@
-﻿using System.Globalization;
+﻿
+
+using System.Globalization;
 using System.Text;
+
+namespace SieFileFormat.Sie;
+
 
 /// <summary>
 /// Read a SIE file (type 1-4).
@@ -41,7 +46,7 @@ public class SieFileReader
         var sie = new SieFile();
         _rowNumber = 0; _errors = []; _warnings = [];
         var foundTypes = new HashSet<string>();
-        Crc32 crc = null;
+        SieCrc32 crc = null;
 
         // Ensure codepage 437 is loaded
         if (!Encoding.GetEncodings().Any(x => x.CodePage == 437))
@@ -249,16 +254,15 @@ public class SieFileReader
                     Assert(line?.Trim() == "}", "Post #VER was not closed with a '}'");
                     Assert(entry.Rows.Sum(r => r.Amount) == 0, "Post #VER sum of rows is not zero");
                     break;
-                case "#KSUMMA": // Calculate and verifying a CRC32 checksum. Works on all test files but one...
+                case "#KSUMMA": // Calculate and verifying a CRC32 checksum. 
                     if (crc == null)
                     {
-                        crc = new Crc32();
+                        crc = new SieCrc32();
                     }
                     else if (AssertParameters(1))
                     {
-                        Assert(uint.TryParse(_parts[1], out uint checksum), "Could not parse KSUMMA parameter");
-                        // The checksum is wrong in one test file... Just warn for now.
-                        WarnIf(crc.Checksum != checksum, "KSUMMA checksum does not match");
+                        Assert(uint.TryParse(_parts[1], out uint checksum), "Could not parse KSUMMA parameter");                        
+                        Assert(crc.Checksum == checksum, "KSUMMA checksum does not match");
                     }
                     break;
                 default: break; // Unknown key words should be ignored.
