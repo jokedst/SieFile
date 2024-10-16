@@ -2,7 +2,6 @@
 using System.Text;
 using System.Text.Json;
 using SieFileFormat.Sie;
-using System.Data.SqlClient;
 
 namespace SieFileFormat;
 

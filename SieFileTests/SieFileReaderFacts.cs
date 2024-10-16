@@ -4,7 +4,7 @@ using SieFileFormat.Sie;
 
 namespace SieFileTests;
 
-public class SieFileReaderFacts
+public partial class SieFileReaderFacts
 {
     private readonly SieFileReader reader = new();
 
@@ -280,6 +280,57 @@ public class SieFileReaderFacts
     }
 
     [Test]
+    public void CanReadThenWriteTestFilesInMem()
+    {
+        var allErrors = new List<string>();
+        var writer = new SieFileWriter();
+        Directory.CreateDirectory("testfiles_output");
+        foreach (var filename in Directory.EnumerateFiles(@"..\..\..\sie_test_files"))
+        {
+            using var originalStream = new MemoryStream();
+            File.OpenRead(filename).CopyTo(originalStream);
+            originalStream.Seek(0, SeekOrigin.Begin);
+            var sie = reader.Read(originalStream, filename);
+
+            //using var newStream = new MemoryStream();
+            //writer.Write(newStream, sie);
+            //using (var fs = File.OpenWrite(Path.Combine("testfiles_output", Path.GetFileName(filename))))
+            //{
+            //    writer.Write(fs, sie);
+            //}
+
+            using var wstream = new MemoryStream();
+            writer.Write(wstream, sie);
+
+            var content = wstream.GetFileContent();
+
+            var originalContent = SplitLines().Split(originalStream.GetFileContent());
+
+            // Compare.. something?
+            // Console.WriteLine(originalContent.Length + " vs " + content.Length);
+
+            var createdLines = SplitLines().Split(content);
+
+            var created = createdLines.ToHashSet();
+            var original = originalContent.ToHashSet();
+
+            var union = created.Intersect(original);
+
+            Console.WriteLine("==== file: " + Path.GetFileName(filename) + " ====");
+            Console.WriteLine("Original file: " + originalContent.Length + " rows");
+            Console.WriteLine("Generated file: " + createdLines.Length + " rows");
+            Console.WriteLine("Common rows: " + union.Count() + " rows");
+
+            // Normalize the original lines and try again
+            var normalizedRows = originalContent.Select(Normalize).ToList();
+            var normalized = new HashSet<string>(normalizedRows);
+            union = created.Intersect(normalized);
+            Console.WriteLine("Common rows (normalized): " + union.Count() + " rows");
+            //File.WriteAllLines(Path.Combine("testfiles_output", Path.GetFileName(filename) + "x.txt"), normalizedRows);
+        }
+    }
+
+    [Test]
     public void TestTest()
     {
         var n=Normalize("#RES	0	7220	    461999.89");
@@ -307,4 +358,7 @@ public class SieFileReaderFacts
         if (data.Contains(' ')) return "\"" + data.Replace("\"", "\\\"") + "\"";
         return data;
     }
+
+    [GeneratedRegex(@"\r?\n|\r")]
+    private static partial Regex SplitLines();
 }

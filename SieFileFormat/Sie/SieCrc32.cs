@@ -2,6 +2,7 @@
 
 /// <summary>
 /// Performs 32-bit reversed cyclic redundancy checks, using the polynomial for SIE files.
+/// Can not be reused.
 /// </summary>
 public class SieCrc32
 {
@@ -15,7 +16,10 @@ public class SieCrc32
     /// </summary>
     private static readonly uint[] s_checksumTable;
 
-    private uint _checksum;
+    /// <summary>
+    /// Current internal checksum, initialized to all ones.
+    /// </summary>
+    private uint _checksum = 0xFFFFFFFF;
 
     /// <summary>
     /// Generates a static lookup table which is used to optimize the checksum.
@@ -33,13 +37,6 @@ public class SieCrc32
             }
             return tableEntry;
         }).ToArray();
-    }
-
-    /// <summary>
-    /// Creates and initializes a new instance of the Crc32 class.
-    /// </summary>
-    public SieCrc32() { 
-        _checksum = 0xFFFFFFFF;
     }
 
     /// <summary>

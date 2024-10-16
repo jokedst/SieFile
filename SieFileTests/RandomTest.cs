@@ -71,20 +71,4 @@ public class RandomTest
         parts="#PROSA		\"Exporterat av \\\"Norstedts Revision\\\"\"".SplitSieLine();
         Assert.That(parts, Is.EqualTo(new[] { "#PROSA", "Exporterat av \"Norstedts Revision\"" }));
     }
-
-    [Test]
-    public void FormatDecimals(){
-        decimal a=5, b=21.3m, c=9.99m, d=4.321m;
-        Console.WriteLine((0.3249m).ToString("f", System.Globalization.CultureInfo.InvariantCulture));
-        Console.WriteLine(a.ToString("f", System.Globalization.CultureInfo.InvariantCulture));
-        Console.WriteLine(b.ToString("f", System.Globalization.CultureInfo.InvariantCulture));
-        Console.WriteLine(c.ToString("f", System.Globalization.CultureInfo.InvariantCulture));
-        Console.WriteLine(d.ToString("f", System.Globalization.CultureInfo.InvariantCulture));
-
-        Console.WriteLine((0.3249m).ToString("#.##", System.Globalization.CultureInfo.InvariantCulture));
-        Console.WriteLine(a.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));
-        Console.WriteLine(b.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));
-        Console.WriteLine(c.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));
-        Console.WriteLine(d.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));
-    }
 }

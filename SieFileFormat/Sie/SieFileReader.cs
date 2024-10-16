@@ -1,10 +1,7 @@
-﻿
-
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 
 namespace SieFileFormat.Sie;
-
 
 /// <summary>
 /// Read a SIE file (type 1-4).
